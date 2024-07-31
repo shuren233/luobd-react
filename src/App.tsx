@@ -1,9 +1,16 @@
 
+import router from "@/router";
+import {useRoutes,Link} from "react-router-dom";
+
 function App() {
+    const outlet = useRoutes(router);
   return (
     <>
       <div>
-        项目初始化
+        <Link to='/home'>Home</Link>
+        <Link to='/user'>User</Link>
+          {/* 路由渲染  */}
+          {outlet}
       </div>
     </>
   )
