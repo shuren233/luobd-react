@@ -116,8 +116,8 @@ const App: React.FC = () => {
         console.log("匹配首个打开key值" + path)
         if(path && path !== '') {
             for (let i = 0; i < items.length; i++) {
-                const item =  items[i]
-                if(item?.children && item.children != null) {
+                const item:MenuItem =  items[i]
+                if(item?.children) {
                     item.children.forEach(v => {
                         if(v.key === path) {
                             console.log('找到路由');
