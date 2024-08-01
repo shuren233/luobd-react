@@ -45,11 +45,16 @@ const App: React.FC = () => {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
 
+    const changeMenu = (e:{key:string}) => {
+        console.log(e.key)
+    }
+
+
     return (
         <Layout style={{ minHeight: '100vh' }}>
             <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
                 <div className="demo-logo-vertical" />
-                <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+                <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items}   onClick={changeMenu} />
             </Sider>
             <Layout>
                 <Header style={{ padding: 0, background: colorBgContainer }} >
