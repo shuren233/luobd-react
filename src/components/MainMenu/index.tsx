@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-    TeamOutlined,
     UserOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
@@ -9,32 +8,92 @@ import {Menu } from 'antd';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
-function getItem(
-    label: React.ReactNode,
-    key: React.Key,
-    icon?: React.ReactNode,
-    children?: MenuItem[],
-): MenuItem {
-    return {
-        key,
-        icon,
-        children,
-        label,
-    } as MenuItem;
-}
 
 const items: MenuItem[] = [
-    getItem('礼金管理', 'sub1', <UserOutlined />, [
-        getItem('礼金项目', '/home/user'),
-        getItem('Bill', '4'),
-        getItem('Alex', '5'),
-    ]),
-    getItem('计划管理', 'sub2', <TeamOutlined />,
-        [getItem('Team 1', '6'),
-            getItem('Team 2', '8')]),
-    getItem('记账管理', 'sub3', <TeamOutlined />,
-        [getItem('Team 1', '9'),
-            getItem('Team 2', '10')]),
+    {
+        label: "门户信息",
+        key: '/home/portal',
+        icon: <UserOutlined />
+    },
+    {
+        label: "礼金管理",
+        key: 'cash',
+        icon: <UserOutlined />,
+        children: [
+            {
+                label: "礼金项目",
+                key: '/home/cashProject',
+                icon: <UserOutlined />
+            },
+            {
+                label: "礼金明细",
+                key: '/home/cashItem',
+                icon: <UserOutlined />
+            },
+        ]
+    },
+    {
+        label: "计划管理",
+        key: 'plan',
+        icon: <UserOutlined />,
+        children: [
+            {
+                label: "待办列表",
+                key: '/home/planItem',
+                icon: <UserOutlined />
+            },
+            {
+                label: "我的日程",
+                key: '/home/planSchedule',
+                icon: <UserOutlined />
+            },
+        ]
+    },
+    {
+        label: "财务管理",
+        key: 'finance',
+        icon: <UserOutlined />,
+        children: [
+            {
+                label: "分类管理",
+                key: '/home/financeCategory',
+                icon: <UserOutlined />
+            },
+            {
+                label: "财务流水",
+                key: '/home/financeRecord',
+                icon: <UserOutlined />
+            },
+            {
+                label: "计划目标",
+                key: '/home/financePlan',
+                icon: <UserOutlined />
+            },
+            {
+                label: "财务统计",
+                key: '/home/financeStatistics',
+                icon: <UserOutlined />
+            },
+        ]
+    },
+    {
+        label: "系统管理",
+        key: 'system',
+        icon: <UserOutlined />,
+        children: [
+            {
+                label: "系统设置",
+                key: '/home/systemSet',
+                icon: <UserOutlined />
+            },
+            {
+                label: "系统监控",
+                key: '/home/financeRecord',
+                icon: <UserOutlined />
+            }
+        ]
+    },
+
 ];
 
 const App: React.FC = () => {
@@ -56,7 +115,6 @@ const App: React.FC = () => {
                       items={items} openKeys={openKeys}
                       onOpenChange={openMenu}
                       onClick={changeMenu} />
-
     );
 };
 
