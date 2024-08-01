@@ -8,9 +8,8 @@ import '@/assets/style/global.scss'
 import App from './App.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
+
       <BrowserRouter>
           <App />
       </BrowserRouter>
-  </React.StrictMode>,
 )

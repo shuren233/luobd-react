@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     UserOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import {useNavigate} from "react-router-dom";
+import {useNavigate,useLocation} from "react-router-dom";
 import {Menu } from 'antd';
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -99,6 +99,40 @@ const items: MenuItem[] = [
 const App: React.FC = () => {
     const [openKeys,setOpenKeys] = useState([])
     const navigate = useNavigate();
+    // 路由当前路由信息
+    const location = useLocation();
+
+
+    useEffect(() => {
+
+        setFirstOpenKey();
+
+    })
+
+
+
+    const setFirstOpenKey = () => {
+        const path = location.pathname;
+        console.log("匹配首个打开key值" + path)
+        if(path && path !== '') {
+            for (let i = 0; i < items.length; i++) {
+                const item =  items[i]
+                if(item?.children && item.children != null) {
+                    item.children.forEach(v => {
+                        if(v.key === path) {
+                            console.log('找到路由');
+                            setOpenKeys([item.key])
+                        }
+                    })
+                }
+            }
+        }
+    }
+
+
+
+
+
 
     // 路由跳转
     const changeMenu = (e:{key:string}) => {
@@ -110,7 +144,7 @@ const App: React.FC = () => {
         setOpenKeys([keys[keys.length - 1]])
     }
     return (
-                <Menu theme="dark" defaultSelectedKeys={['1']}
+                <Menu theme="dark" defaultSelectedKeys={[location.pathname]}
                       mode="inline"
                       items={items} openKeys={openKeys}
                       onOpenChange={openMenu}
