@@ -1,6 +1,5 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-// 路由支持
 import {BrowserRouter} from "react-router-dom";
 // 初始化全局样式
 import 'reset-css'
@@ -11,7 +10,7 @@ import App from './App.tsx'
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
       <BrowserRouter>
-    <App />
+          <App />
       </BrowserRouter>
   </React.StrictMode>,
 )
