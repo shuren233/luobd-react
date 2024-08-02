@@ -1,0 +1,5 @@
+
+interface StoreDetail {
+
+    num:number
+}

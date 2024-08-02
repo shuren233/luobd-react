@@ -12,7 +12,7 @@ type MenuItem = Required<MenuProps>['items'][number];
 const items: MenuItem[] = [
     {
         label: "门户信息",
-        key: '/home/portal',
+        key: '/home/user',
         icon: <UserOutlined />
     },
     {
