@@ -1,5 +1,6 @@
 
 import React,{lazy} from "react";
+import Login from '@/views/login'
 const Home = lazy(() => import('@/views/home'))
 const User = lazy(() => import('@/views/user'))
 
@@ -25,6 +26,11 @@ const router = [
             }
 
         ]
+    },
+    {
+        path: '/login',
+        // 重定向
+        element: <Login />
     },
 
 ]
