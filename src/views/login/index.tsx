@@ -6,12 +6,14 @@ import init from './init.ts'
 import {loginRequest} from "@/api/auth";
 import {LoginInput} from "@/types/auth";
 import {HttpResponse} from "@/types/common";
+import {useDispatch} from "react-redux";
 
 const App =  () => {
     const [username,setUsername] = useState("");
     const [password,setPassword] = useState("");
     const [checkCode,setCheckCode] = useState("");
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         init();
@@ -51,6 +53,7 @@ const App =  () => {
        const response:HttpResponse<string> = await loginRequest(input);
         if(response.code === 200) {
             message.info('登录成功');
+            dispatch({type:'setToken',data:response.data})
             navigate('/home')
         }
     }

@@ -1,5 +1,6 @@
 
 interface StoreDetail {
 
-    num:number
+    num:number,
+    token:string
 }
