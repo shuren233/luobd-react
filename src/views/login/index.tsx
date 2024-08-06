@@ -1,14 +1,17 @@
 import {ChangeEvent, useEffect, useState} from 'react';
+import {useNavigate} from "react-router-dom";
 import style from './login.module.scss'
 import {Button, Input, message, Space} from "antd";
 import init from './init.ts'
+import {loginRequest} from "@/api/auth";
+import {LoginInput} from "@/types/auth";
+import {HttpResponse} from "@/types/common";
 
 const App =  () => {
-
-
     const [username,setUsername] = useState("");
     const [password,setPassword] = useState("");
     const [checkCode,setCheckCode] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         init();
@@ -26,7 +29,7 @@ const App =  () => {
     }
 
 
-    const submit =  () => {
+    const submit =  async () => {
 
         if(!username.trim()) {
             message.warning("请输入用户名")
@@ -41,6 +44,15 @@ const App =  () => {
             return;
         }
 
+        const input:LoginInput = {
+            username: username,
+            password: password
+        }
+       const response:HttpResponse<string> = await loginRequest(input);
+        if(response.code === 200) {
+            message.info('登录成功');
+            navigate('/home')
+        }
     }
 
 
