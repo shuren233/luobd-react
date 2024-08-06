@@ -207,7 +207,7 @@ const App: React.FC = () => {
                     <Outlet/>
                 </Content>
                 <Footer style={{ textAlign: 'center',padding: 0,lineHeight: '48px' }}>
-                    Ant Design ©{new Date().getFullYear()} Created by Ant UED
+                    蜀IPC备2024091450号-1
                 </Footer>
             </Layout>
         </Layout>

@@ -1,55 +1,81 @@
 
-import React from "react";
+import React, {useState} from "react";
 import style from './project.module.scss'
 import FormItem from "antd/es/form/FormItem";
-import {Button, DatePicker, Input, Table,Pagination } from "antd";
-
-
-
-
-
+import {Button, DatePicker, Input, Table, Pagination, Modal, Form} from "antd";
+import TextArea from "antd/es/input/TextArea";
 const data = [
     {
-        key: 1,
-        name: 'John Brown',
+
+        projectName: 'John Brown',
         remark: 32,
-        address: 'New York No. 1 Lake Park',
-        description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.',
+        projectDate: 'New York No. 1 Lake Park',
+        createTime: '2024-01-12 20:00:00',
     },
     {
-        key: 2,
-        name: 'Jim Green',
+
+        projectName: 'Jim Green',
         remark: 42,
-        address: 'London No. 1 Lake Park',
-        description: 'My name is Jim Green, I am 42 years old, living in London No. 1 Lake Park.',
+        projectDate: 'London No. 1 Lake Park',
+        createTime: '2024-01-12 20:00:00',
     },
     {
-        key: 3,
-        name: 'Joe Black',
+
+        projectName: 'Joe Black',
         remark: 32,
-        address: 'Sidney No. 1 Lake Park',
-        description: 'My name is Joe Black, I am 32 years old, living in Sidney No. 1 Lake Park.',
+        projectDate: 'Sidney No. 1 Lake Park',
+        createTime: '2024-01-12 20:00:00',
+    },
+];
+const columns = [
+    { title: '项目名称', dataIndex: 'projectName', key: 'projectName' },
+    { title: '项目日期', dataIndex: 'projectDate', key: 'projectDate' },
+    { title: '创建时间', dataIndex: 'createTime', key: 'createTime' },
+    { title: '备注', dataIndex: 'remark', key: 'remark' },
+    {
+        title: '操作',
+        key: 'option',
+        render: (row,record) => <div>
+            <a onClick={() => alert("1")}>编辑</a>
+            <a style={{marginLeft:'10px'}} onClick={() => alert("1")}>删除</a>
+        </div>
     },
 ];
 const App: React.FC = () => {
-
-    const columns = [
-        { title: '项目名称', dataIndex: 'projectName', key: 'projectName' },
-        { title: '项目日期', dataIndex: 'projectDate', key: 'projectDate' },
-        { title: '创建时间', dataIndex: 'createTime', key: 'createTime' },
-        { title: '备注', dataIndex: 'remark', key: 'remark' },
-        {
-            title: '操作',
-            key: 'option',
-            render: (row,record) => <a onClick={() => alert("1")}>Delete</a>,
-        },
-    ];
-
-
-
-
+    const [visible,setVisible] = useState(false)
+    const [title,setTitle] = useState('新增项目')
+    const [form] = Form.useForm();
+    const closeVisible = () => {
+        setVisible(false);
+    }
+    const submit = () => {
+        console.log(form.validateFields)
+    }
     return (
         <>
+            <Modal
+                title={title}
+                visible={visible}
+                onCancel={closeVisible}
+                onOk={submit}
+                width={'400px'}
+            >
+
+            <Form  form={form} style={{marginTop: '20px'}} labelAlign={'left'}>
+                <FormItem name={'projectName'} label={'项目名称'}>
+                    {
+                    }
+                    <Input placeholder={'请输入项目名称'} />
+                </FormItem>
+                <FormItem name={'[projectDate'} label={'项目日期'}>
+                    <DatePicker style={{width: '280px'}} />
+                </FormItem>
+                <FormItem  name={'remark'} label={'备注信息'}>
+                    <TextArea />
+                </FormItem>
+            </Form>
+
+            </Modal>
         <div className={style.cashProject}>
             <div className={style.top}>
                     <FormItem label='项目名称'>
@@ -64,7 +90,11 @@ const App: React.FC = () => {
                     <Button type={"primary"} className={style.space}>搜索</Button>
             </div>
             <div className="content">
+                <div className="tool">
+                    <Button type={"primary"} onClick={() => setVisible(!visible)}>新增</Button>
+                </div>
                 <Table
+                    style={{marginTop:'20px'}}
                     columns={columns}
                     dataSource={data}
                 />
@@ -77,9 +107,5 @@ const App: React.FC = () => {
 
     )
 
-
-
 }
-
-
 export default App;

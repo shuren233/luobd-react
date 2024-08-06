@@ -1,0 +1,14 @@
+.cashProject {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .top {
+    display: flex;
+    justify-items: center;
+  }
+  .space {
+    margin-left: 20px;
+  }
+
+}
