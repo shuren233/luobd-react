@@ -3,6 +3,14 @@ import React,{lazy} from "react";
 import Login from '@/views/login'
 const Home = lazy(() => import('@/views/home'))
 const User = lazy(() => import('@/views/user'))
+const CashProject = lazy(() => import('@/views/cash/project'))
+const CashItem = lazy(() => import('@/views/cash/item'))
+const PlanItem = lazy(() => import('@/views/plan/item'))
+const PlanSchedule = lazy(() => import('@/views/plan/schedule'))
+const FinanceCategory = lazy(() => import('@/views/finance/category'))
+const FinanceRecord = lazy(() => import('@/views/finance/record'))
+const FinancePlan = lazy(() => import('@/views/finance/plan'))
+const FinanceStatistics = lazy(() => import('@/views/finance/statistics'))
 
 // 重定向组件
 import {Navigate} from "react-router-dom";
@@ -23,8 +31,55 @@ const router = [
                 element: <React.Suspense fallback={<div>加载中...</div>}>
                     <User />
                 </React.Suspense>
-            }
-
+            },
+            {
+                path: '/home/cashProject',
+                element: <React.Suspense fallback={<div>加载中...</div>}>
+                    <CashProject />
+                </React.Suspense>
+            },
+            {
+                path: '/home/cashItem',
+                element: <React.Suspense fallback={<div>加载中...</div>}>
+                    <CashItem />
+                </React.Suspense>
+            },
+            {
+                path: '/home/planItem',
+                element: <React.Suspense fallback={<div>加载中...</div>}>
+                    <PlanItem />
+                </React.Suspense>
+            },
+            {
+                path: '/home/planSchedule',
+                element: <React.Suspense fallback={<div>加载中...</div>}>
+                    <PlanSchedule />
+                </React.Suspense>
+            },
+            {
+                path: '/home/financeCategory',
+                element: <React.Suspense fallback={<div>加载中...</div>}>
+                    <FinanceCategory />
+                </React.Suspense>
+            },
+            {
+                path: '/home/financeRecord',
+                element: <React.Suspense fallback={<div>加载中...</div>}>
+                    <FinanceRecord />
+                </React.Suspense>
+            },
+            {
+                path: '/home/financePlan',
+                element: <React.Suspense fallback={<div>加载中...</div>}>
+                    <FinancePlan />
+                </React.Suspense>
+            },
+            {
+                path: '/home/financeStatistics',
+                element: <React.Suspense fallback={<div>加载中...</div>}>
+                    <FinanceStatistics />
+                </React.Suspense>
+            },
         ]
     },
     {

@@ -1,6 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import {
     UserOutlined,
+    GiftFilled,
+    ProjectFilled,
+    OrderedListOutlined,
+    SolutionOutlined,
+    ScheduleFilled,
+    DollarCircleOutlined,
+    BlockOutlined,
+    UnorderedListOutlined,
+    AlertFilled,
+    BarChartOutlined
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import {useNavigate,useLocation} from "react-router-dom";
@@ -18,61 +28,61 @@ const items: MenuItem[] = [
     {
         label: "礼金管理",
         key: 'cash',
-        icon: <UserOutlined />,
+        icon: <GiftFilled />,
         children: [
             {
                 label: "礼金项目",
                 key: '/home/cashProject',
-                icon: <UserOutlined />
+                icon: <ProjectFilled />
             },
             {
                 label: "礼金明细",
                 key: '/home/cashItem',
-                icon: <UserOutlined />
+                icon: <OrderedListOutlined />
             },
         ]
     },
     {
         label: "计划管理",
         key: 'plan',
-        icon: <UserOutlined />,
+        icon: <SolutionOutlined />,
         children: [
             {
                 label: "待办列表",
                 key: '/home/planItem',
-                icon: <UserOutlined />
+                icon: <OrderedListOutlined />
             },
             {
                 label: "我的日程",
                 key: '/home/planSchedule',
-                icon: <UserOutlined />
+                icon: <ScheduleFilled />
             },
         ]
     },
     {
         label: "财务管理",
         key: 'finance',
-        icon: <UserOutlined />,
+        icon: <DollarCircleOutlined />,
         children: [
             {
                 label: "分类管理",
                 key: '/home/financeCategory',
-                icon: <UserOutlined />
+                icon: <BlockOutlined />
             },
             {
                 label: "财务流水",
                 key: '/home/financeRecord',
-                icon: <UserOutlined />
+                icon: <UnorderedListOutlined />
             },
             {
                 label: "计划目标",
                 key: '/home/financePlan',
-                icon: <UserOutlined />
+                icon: <AlertFilled />
             },
             {
                 label: "财务统计",
                 key: '/home/financeStatistics',
-                icon: <UserOutlined />
+                icon: <BarChartOutlined />
             },
         ]
     },
@@ -114,19 +124,19 @@ const App: React.FC = () => {
     const setFirstOpenKey = () => {
         const path = location.pathname;
         console.log("匹配首个打开key值" + path)
-        if(path && path !== '') {
-            for (let i = 0; i < items.length; i++) {
-                const item:MenuItem =  items[i]
-                if(item?.children) {
-                    item.children.forEach(v => {
-                        if(v.key === path) {
-                            console.log('找到路由');
-                            setOpenKeys([item.key])
-                        }
-                    })
-                }
-            }
-        }
+        // if(path && path !== '') {
+        //     for (let i = 0; i < items.length; i++) {
+        //         const plan =  items[i]
+        //         if(plan?.children) {
+        //             plan.children.forEach(v => {
+        //                 if(v.key === path) {
+        //                     console.log('找到路由');
+        //                     setOpenKeys([plan.key])
+        //                 }
+        //             })
+        //         }
+        //     }
+        // }
     }
 
 
@@ -136,7 +146,7 @@ const App: React.FC = () => {
 
     // 路由跳转
     const changeMenu = (e:{key:string}) => {
-        navigate(e.key)
+        navigate(e.key);
     }
     const openMenu = (keys: string[]) => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
