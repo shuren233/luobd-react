@@ -38,7 +38,7 @@ const columns = [
     {
         title: '操作',
         key: 'option',
-        render: (row,record) => <div>
+        render: () => <div>
             <a onClick={() => alert("1")}>编辑</a>
             <a style={{marginLeft:'10px'}} onClick={() => alert("1")}>删除</a>
         </div>
@@ -46,7 +46,7 @@ const columns = [
 ];
 const App: React.FC = () => {
     const [visible,setVisible] = useState(false)
-    const [title,setTitle] = useState('新增明细')
+    const [title] = useState('新增明细')
     const [form] = Form.useForm();
     const closeVisible = () => {
         setVisible(false);

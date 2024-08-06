@@ -1,0 +1,36 @@
+.financeCategory {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    .left {
+        width: 200px;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 10px;
+    }
+    .right {
+        flex: 1;
+        margin-left: 16px;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        .top {
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+        }
+        .content {
+
+        }
+        .footer {
+
+        }
+    }
+
+
+
+
+
+}

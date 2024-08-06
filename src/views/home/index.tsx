@@ -154,7 +154,7 @@ const menuMappers:MenuMapper[] = [
 
 const App: React.FC = () => {
     const [openKeys,setOpenKeys] = useState([])
-    const [crumbs,setCrumbs] = useState([])
+    const [crumbs,setCrumbs] = useState<string[]>([])
     const navigate = useNavigate();
     // 路由当前路由信息
     const location = useLocation();
