@@ -1,76 +1,151 @@
 
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import style from './project.module.scss'
 import FormItem from "antd/es/form/FormItem";
-import {Button, DatePicker, Input, Table, Pagination, Modal, Form} from "antd";
+import {Button, DatePicker, Input, Table, Pagination, Modal, Form, message} from "antd";
 import TextArea from "antd/es/input/TextArea";
-const data = [
-    {
+import {CashProject, CashProjectInput, CashProjectPageInput} from "@/types/cash";
+import {HttpResponse} from "@/types/common";
+import {create, page, update} from "@/api/cash";
+import Column from "antd/es/table/Column";
+import moment from "moment";
 
-        projectName: 'John Brown',
-        remark: 32,
-        projectDate: 'New York No. 1 Lake Park',
-        createTime: '2024-01-12 20:00:00',
-    },
-    {
 
-        projectName: 'Jim Green',
-        remark: 42,
-        projectDate: 'London No. 1 Lake Park',
-        createTime: '2024-01-12 20:00:00',
-    },
-    {
-
-        projectName: 'Joe Black',
-        remark: 32,
-        projectDate: 'Sidney No. 1 Lake Park',
-        createTime: '2024-01-12 20:00:00',
-    },
-];
-const columns = [
-    { title: '项目名称', dataIndex: 'projectName', key: 'projectName' },
-    { title: '项目日期', dataIndex: 'projectDate', key: 'projectDate' },
-    { title: '创建时间', dataIndex: 'createTime', key: 'createTime' },
-    { title: '备注', dataIndex: 'remark', key: 'remark' },
-    {
-        title: '操作',
-        key: 'option',
-        render: () => <div>
-            <a onClick={() => alert("1")}>编辑</a>
-            <a style={{marginLeft:'10px'}} onClick={() => alert("1")}>删除</a>
-        </div>
-    },
-];
 const App: React.FC = () => {
     const [visible,setVisible] = useState(false)
-    const [title] = useState('新增项目')
+    const [title,setTitle] = useState('新增项目')
+    const [projectName,setProjectName] = useState('')
     const [form] = Form.useForm();
-    const closeVisible = () => {
-        setVisible(false);
+    const [list,setList] = useState<CashProject[]>([])
+    const [total,setTotal] = useState(0);
+    const [input,setInput]  = useState<CashProjectInput>({
+        id:0,
+        projectName:'',
+        projectDate:'',
+        remark:''
+    })
+
+
+    useEffect(() => {
+        getPage()
+    },[])
+
+
+    const getPage= async () => {
+        const input:CashProjectPageInput = {
+            pageIndex:1,
+            pageSize:10,
+            projectName:'',
+            startProjectDate:'',
+            endProjectDate:''
+        }
+
+      const res:HttpResponse<CashProject[]> =  await page(input);
+        setList(res.data)
+        setTotal(res.total)
     }
-    const submit = () => {
-        console.log(form.validateFields)
+
+
+    const edit = (record:any) => {
+        setTitle('编辑项目')
+        setProjectName(record.projectName)
+        setInput({
+            ...input,
+            id:record.id,
+            projectName:record.projectName,
+            projectDate:record.projectDate,
+            remark:record.remark
+        })
+        setVisible(true)
     }
+
+    const projectNameOnChange = (e:any) => {
+        setInput({
+            ...input,
+            projectName:e.target.value
+        })
+    }
+
+    const projectDateOnChange = (dateString:string) => {
+
+        setInput({
+            ...input,
+            projectDate:dateString
+        })
+    }
+
+    const remarkOnChange = (e:any) => {
+        setInput({
+            ...input,
+            remark:e.target.value
+        })
+    }
+
+
+
+
+    const closeModel = () => {
+        setVisible(false)
+        setInput({
+            id:0,
+            projectName:'',
+            projectDate:'',
+            remark:''
+        })
+    }
+
+
+    const submit =  () => {
+        if (input.id === 0) {
+            create(input).then(res => {
+                if(res.code === 200) {
+                    setTimeout(() => {
+                        message.success('新增成功')
+                        getPage()
+                        closeModel()
+                    },50)
+                }
+            })
+        }else {
+            update(input).then(res => {
+                if(res.code === 200) {
+                    setTimeout(() => {
+                        message.success('修改成功')
+                        getPage()
+                        closeModel()
+                    },50)
+                }
+            })
+
+
+
+        }
+    }
+
+
+
+
+
     return (
         <>
             <Modal
                 title={title}
                 visible={visible}
-                onCancel={closeVisible}
+                onCancel={closeModel}
                 onOk={submit}
                 width={'400px'}
             >
             <Form  form={form} style={{marginTop: '20px'}} labelAlign={'left'}>
-                <FormItem name={'projectName'} label={'项目名称'}>
+                <FormItem name={'projectName'} label={'项目名称'} initialValue={input.projectName}>
                     {
                     }
-                    <Input placeholder={'请输入项目名称'} />
+                    <Input value={projectName} onChange={projectNameOnChange} placeholder={'请输入项目名称'} />
                 </FormItem>
-                <FormItem name={'[projectDate'} label={'项目日期'}>
-                    <DatePicker style={{width: '280px'}} />
+                <FormItem name={'[projectDate'} label={'项目日期'}  initialValue={moment(input.projectDate,'YYYY-MM-DD')}>
+                    <DatePicker value={input.projectDate} onChange={projectDateOnChange} style={{width: '280px'}} />
                 </FormItem>
-                <FormItem  name={'remark'} label={'备注信息'}>
-                    <TextArea />
+                <FormItem   name={'remark'} label={'备注信息'} initialValue={input.remark}>
+                    <TextArea  value={input.remark} onChange={remarkOnChange} placeholder={'请输入备注信息'} />
                 </FormItem>
             </Form>
 
@@ -90,16 +165,31 @@ const App: React.FC = () => {
             </div>
             <div className="content">
                 <div className="tool">
-                    <Button type={"primary"} onClick={() => setVisible(!visible)}>新增</Button>
+                    <Button type={"primary"} onClick={() =>  {
+                        setVisible(!visible);
+                        setTitle('新增项目')
+                    }
+                    }>新增</Button>
                 </div>
                 <Table
                     style={{marginTop:'20px'}}
-                    columns={columns}
-                    dataSource={data}
-                />
+                    dataSource={list}
+                    rowKey={'id'}
+                >
+                 <Column title={'项目名称'} dataIndex={'projectName'} />
+                    <Column title={'项目日期'} dataIndex={'projectDate'} />
+                    <Column title={'创建时间'} dataIndex={'createTime'} />
+                    <Column title={'备注'} dataIndex={'remark'} />
+                    <Column title={'操作'} dataIndex={'option'} render={(value,record) => (
+                        <div>
+                            <a onClick={() => edit(record)}>编辑</a>
+                        </div>
+                    )} />
+
+                </Table>
             </div>
             <div className="footer">
-                <Pagination defaultCurrent={1} total={50} />
+                <Pagination defaultCurrent={1} total={total} />
             </div>
         </div>
         </>
