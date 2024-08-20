@@ -3,10 +3,9 @@ import {useNavigate} from "react-router-dom";
 import style from './login.module.scss'
 import {Button, Input, message, Space} from "antd";
 import init from './init.ts'
-import {loginRequest} from "@/api/auth";
 import {LoginInput} from "@/types/auth";
-import {HttpResponse} from "@/types/common";
 import {useDispatch} from "react-redux";
+import {login} from "@/store/modules/userStore";
 
 const App =  () => {
     const [username,setUsername] = useState("");
@@ -50,11 +49,9 @@ const App =  () => {
             username: username,
             password: password
         }
-       const response:HttpResponse<string> = await loginRequest(input);
-        if(response.code === 200) {
-            message.info('登录成功');
-            dispatch({type:'setToken',data:response.data})
-            navigate('/home')
+        await dispatch(login(input))
+        if(localStorage.getItem('token')) {
+            navigate('/')
         }
     }
 

@@ -161,7 +161,7 @@ const App: React.FC = () => {
                     <FormItem label='项目结束日期' className={style.space}>
                         <DatePicker  />
                     </FormItem>
-                    <Button type={"primary"} className={style.space}>搜索</Button>
+                    <Button type={"primary"} className={style.space} onClick={() => getPage()}>搜索</Button>
             </div>
             <div className="content">
                 <div className="tool">

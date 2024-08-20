@@ -1,3 +1,12 @@
-import {legacy_createStore} from 'redux'
-import reducer from "@/store/reducer";
-export default legacy_createStore(reducer)
+import { configureStore } from '@reduxjs/toolkit';
+
+import userStore from './modules/userStore';
+
+ const store = configureStore({
+    reducer: {
+        user: userStore,
+    },
+});
+
+
+ export default store

@@ -23,6 +23,7 @@ request.interceptors.response.use((res) => {
     if(res.data.code === 500) {
         message.warning(res.data.msg)
     }
+    console.log(res.data)
     return res.data;
 },(error) => {
     let status = error.response.status;
