@@ -141,8 +141,8 @@ const App: React.FC = () => {
                     }
                     <Input value={projectName} onChange={projectNameOnChange} placeholder={'请输入项目名称'} />
                 </FormItem>
-                <FormItem name={'[projectDate'} label={'项目日期'}  initialValue={moment(input.projectDate,'YYYY-MM-DD')}>
-                    <DatePicker value={input.projectDate} onChange={projectDateOnChange} style={{width: '280px'}} />
+                <FormItem name={'projectDate'} label={'项目日期'}  initialValue={moment(input.projectDate,'YYYY-MM-DD')}>
+                    <DatePicker value={input.projectDate === '' ? null : moment(input.projectDate,'YYYY-MM-DD')} onChange={projectDateOnChange} style={{width: '280px'}} />
                 </FormItem>
                 <FormItem   name={'remark'} label={'备注信息'} initialValue={input.remark}>
                     <TextArea  value={input.remark} onChange={remarkOnChange} placeholder={'请输入备注信息'} />
