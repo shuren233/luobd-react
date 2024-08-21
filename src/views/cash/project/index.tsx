@@ -6,7 +6,7 @@ import {Button, DatePicker, Input, Table, Pagination, Modal, Form, message} from
 import TextArea from "antd/es/input/TextArea";
 import {CashProject, CashProjectInput, CashProjectPageInput} from "@/types/cash";
 import {HttpResponse} from "@/types/common";
-import {create, page, update} from "@/api/cash";
+import {create, page, remove, update} from "@/api/cash";
 import Column from "antd/es/table/Column";
 import moment from "moment";
 
@@ -59,6 +59,17 @@ const App: React.FC = () => {
         setVisible(true)
     }
 
+
+    const deleteById = async (id:string)  =>{
+         const res:HttpResponse<boolean> =  await remove(id)
+        if(res.code === 200) {
+            setTimeout(() => {
+                message.success('删除成功')
+                getPage()
+            },50)
+        }
+    }
+
     const projectNameOnChange = (e:any) => {
         setInput({
             ...input,
@@ -66,8 +77,8 @@ const App: React.FC = () => {
         })
     }
 
-    const projectDateOnChange = (dateString:string) => {
-
+    const projectDateOnChange = (date:any,dateString:string) => {
+        console.log(dateString)
         setInput({
             ...input,
             projectDate:dateString
@@ -81,9 +92,6 @@ const App: React.FC = () => {
         })
     }
 
-
-
-
     const closeModel = () => {
         setVisible(false)
         setInput({
@@ -93,8 +101,6 @@ const App: React.FC = () => {
             remark:''
         })
     }
-
-
     const submit =  () => {
         if (input.id === 0) {
             create(input).then(res => {
@@ -116,9 +122,6 @@ const App: React.FC = () => {
                     },50)
                 }
             })
-
-
-
         }
     }
 
@@ -142,7 +145,7 @@ const App: React.FC = () => {
                     <Input value={projectName} onChange={projectNameOnChange} placeholder={'请输入项目名称'} />
                 </FormItem>
                 <FormItem name={'projectDate'} label={'项目日期'}  initialValue={moment(input.projectDate,'YYYY-MM-DD')}>
-                    <DatePicker value={input.projectDate === '' ? null : moment(input.projectDate,'YYYY-MM-DD')} onChange={projectDateOnChange} style={{width: '280px'}} />
+                    <DatePicker   format={'YYYY-MM-DD'} value={input.projectDate} onChange={projectDateOnChange} style={{width: '280px'}} />
                 </FormItem>
                 <FormItem   name={'remark'} label={'备注信息'} initialValue={input.remark}>
                     <TextArea  value={input.remark} onChange={remarkOnChange} placeholder={'请输入备注信息'} />
@@ -179,10 +182,12 @@ const App: React.FC = () => {
                  <Column title={'项目名称'} dataIndex={'projectName'} />
                     <Column title={'项目日期'} dataIndex={'projectDate'} />
                     <Column title={'创建时间'} dataIndex={'createTime'} />
+                    <Column title={'更新时间'} dataIndex={'updateTime'} />
                     <Column title={'备注'} dataIndex={'remark'} />
                     <Column title={'操作'} dataIndex={'option'} render={(value,record) => (
                         <div>
                             <a onClick={() => edit(record)}>编辑</a>
+                            <a style={{marginLeft:'10px'}} onClick={() => deleteById(record.id)}>删除</a>
                         </div>
                     )} />
 

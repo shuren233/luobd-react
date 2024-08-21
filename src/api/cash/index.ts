@@ -11,3 +11,6 @@ export const create = (input:CashProjectInput) => httpService.post<any,HttpRespo
 
 
 export const update = (input:CashProjectInput) => httpService.post<any,HttpResponse<boolean>>('/api/cash/project/update',input)
+
+
+export const remove = (id:number) => httpService.get<any,HttpResponse<boolean>>('/api/cash/project/delete?id='+id)
