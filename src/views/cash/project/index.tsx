@@ -4,9 +4,9 @@ import style from './project.module.scss'
 import FormItem from "antd/es/form/FormItem";
 import {Button, DatePicker, Input, Table, Pagination, Modal, Form, message} from "antd";
 import TextArea from "antd/es/input/TextArea";
-import {CashProject, CashProjectInput, CashProjectPageInput} from "@/types/cash";
+import {CashProject, CashProjectInput, CashProjectPageInput} from "@/types/cash/project";
 import {HttpResponse} from "@/types/common";
-import {create, page, remove, update} from "@/api/cash";
+import {create, page, remove, update} from "@/api/cash/project";
 import Column from "antd/es/table/Column";
 import moment from "moment";
 
@@ -133,7 +133,7 @@ const App: React.FC = () => {
         <>
             <Modal
                 title={title}
-                visible={visible}
+                open={visible}
                 onCancel={closeModel}
                 onOk={submit}
                 width={'400px'}
@@ -179,12 +179,12 @@ const App: React.FC = () => {
                     dataSource={list}
                     rowKey={'id'}
                 >
-                 <Column title={'项目名称'} dataIndex={'projectName'} />
-                    <Column title={'项目日期'} dataIndex={'projectDate'} />
-                    <Column title={'创建时间'} dataIndex={'createTime'} />
-                    <Column title={'更新时间'} dataIndex={'updateTime'} />
-                    <Column title={'备注'} dataIndex={'remark'} />
-                    <Column title={'操作'} dataIndex={'option'} render={(value,record) => (
+                 <Column key={'projectName'} title={'项目名称'} dataIndex={'projectName'} />
+                    <Column key={'projectDate'} title={'项目日期'} dataIndex={'projectDate'} />
+                    <Column key={'createTime'} title={'创建时间'} dataIndex={'createTime'} />
+                    <Column key={'updateTime'} title={'更新时间'} dataIndex={'updateTime'} />
+                    <Column key={'remark'} title={'备注'} dataIndex={'remark'} />
+                    <Column key={'option'} title={'操作'} dataIndex={'option'} render={(value,record) => (
                         <div>
                             <a onClick={() => edit(record)}>编辑</a>
                             <a style={{marginLeft:'10px'}} onClick={() => deleteById(record.id)}>删除</a>

@@ -98,7 +98,7 @@ const items: MenuItem[] = [
             },
             {
                 label: "系统监控",
-                key: '/home/financeRecord',
+                key: '/home/systemMonitor',
                 icon: <UserOutlined />
             }
         ]
