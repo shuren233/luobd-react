@@ -94,6 +94,7 @@ const App: React.FC = () => {
 
     const closeModel = () => {
         setVisible(false)
+        form.resetFields();
         setInput({
             id:0,
             projectName:'',
@@ -134,6 +135,7 @@ const App: React.FC = () => {
             <Modal
                 title={title}
                 open={visible}
+                onClose={closeModel}
                 onCancel={closeModel}
                 onOk={submit}
                 width={'400px'}

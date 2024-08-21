@@ -32,6 +32,11 @@ request.interceptors.response.use((res) => {
     if(res.data.code === 500) {
         message.warning(res.data.msg)
     }
+    if(res.data.code === 401) {
+        removeToken();
+        window.location.href = '/login';
+        removeToken();
+    }
     return res.data;
 },(error) => {
     const status = error.response.status;
