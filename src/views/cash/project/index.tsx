@@ -1,6 +1,7 @@
 
-import React, {ChangeEvent, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import style from './project.module.scss'
+import dayjs from "dayjs";
 import FormItem from "antd/es/form/FormItem";
 import {Button, DatePicker, Input, Table, Pagination, Modal, Form, message} from "antd";
 import TextArea from "antd/es/input/TextArea";
@@ -8,26 +9,23 @@ import {CashProject, CashProjectInput, CashProjectPageInput} from "@/types/cash/
 import {HttpResponse} from "@/types/common";
 import {create, page, remove, update} from "@/api/cash/project";
 import Column from "antd/es/table/Column";
-import moment from "moment";
 
 
 const App: React.FC = () => {
+
+
     const [visible,setVisible] = useState(false)
     const [title,setTitle] = useState('新增项目')
     const [form] = Form.useForm();
     const [list,setList] = useState<CashProject[]>([])
     const [total,setTotal] = useState(0);
-    const [input,setInput]  = useState<CashProjectInput>({
-        id:0,
-        projectName:'',
-        projectDate:'',
-        remark:''
-    })
-
-
+    const [id,setId] = useState<number>(0)
     useEffect(() => {
         getPage()
     },[])
+
+
+
 
 
     const getPage= async () => {
@@ -47,11 +45,11 @@ const App: React.FC = () => {
 
     const edit = (record:CashProject) => {
         setTitle('编辑项目')
-        setInput({
-            ...input,
-            id:record.id,
+        setId(record.id)
+        console.log('edit',record.projectDate);
+        form.setFieldsValue({
             projectName:record.projectName,
-            projectDate:record.projectDate,
+            projectDate:dayjs(record.projectDate),
             remark:record.remark
         })
         setVisible(true)
@@ -67,46 +65,26 @@ const App: React.FC = () => {
             },50)
         }
     }
-
-    const projectNameOnChange = (e:ChangeEvent<HTMLInputElement>) => {
-        console.log(e)
-        setInput({
-            ...input,
-            projectName:e.target.value
-        })
-    }
-
-    const projectDateOnChange = (dateString:string):void => {
-        setInput({
-            ...input,
-            projectDate:dateString
-        })
-    }
-
-    const remarkOnChange = (e:ChangeEvent<HTMLTextAreaElement>) => {
-        setInput({
-            ...input,
-            remark:e.target.value
-        })
-    }
-
     const closeModel = () => {
         setVisible(false)
-        form.resetFields();
-        setInput({
-            id:0,
-            projectName:'',
-            projectDate:'',
-            remark:''
-        })
+        setId(0)
+        form.resetFields(['projectName','projectDate','remark']);
     }
     const submit =  () => {
+        const input:CashProjectInput = {
+            id:id,
+            projectName: form.getFieldValue('projectName'),
+            projectDate: form.getFieldValue('projectDate').format('YYYY-MM-DD'),
+            remark: form.getFieldValue('remark')
+        }
+
+
         if (input.id === 0) {
             create(input).then(res => {
                 if(res.code === 200) {
                     setTimeout(() => {
-                        message.success('新增成功')
                         getPage()
+                        message.success('新增成功')
                         closeModel()
                     },50)
                 }
@@ -115,8 +93,8 @@ const App: React.FC = () => {
             update(input).then(res => {
                 if(res.code === 200) {
                     setTimeout(() => {
-                        message.success('修改成功')
                         getPage()
+                        message.success('修改成功')
                         closeModel()
                     },50)
                 }
@@ -135,20 +113,25 @@ const App: React.FC = () => {
                 open={visible}
                 onClose={closeModel}
                 onCancel={closeModel}
-                onOk={submit}
                 width={'400px'}
+                footer={null}
             >
-            <Form  form={form} style={{marginTop: '20px'}} labelAlign={'left'}>
-                <FormItem name={'projectName'} label={'项目名称'} initialValue={input.projectName}>
-                    {
-                    }
-                    <Input  onChange={ projectNameOnChange} placeholder={'请输入项目名称'} />
+            <Form  onFinish={submit} form={form} style={{marginTop: '20px'}} labelAlign={'left'}>
+                <FormItem name={'projectName'} label={'项目名称'} rules={[{ required: true, message: '请输入项目名称' }]}>
+                    <Input    placeholder={'请输入项目名称'} />
                 </FormItem>
-                <FormItem name={'projectDate'} label={'项目日期'}  initialValue={moment(input.projectDate,'YYYY-MM-DD')}>
-                    <DatePicker   format={'YYYY-MM-DD'}  onChange={() =>projectDateOnChange} style={{width: '280px'}} />
+                <FormItem name={'projectDate'} label={'项目日期'}   rules={[{ required: true, message: '请选择项目日期' }]} >
+                    <DatePicker<string> format={'YYYY-MM-DD'}  style={{width: '280px'}} />
                 </FormItem>
-                <FormItem    name={'remark'} label={'备注信息'} initialValue={input.remark}>
-                    <TextArea   onChange={remarkOnChange} placeholder={'请输入备注信息'} />
+                <FormItem    name={'remark'} label={'备注信息'}>
+                    <TextArea   placeholder={'请输入备注信息'} />
+                </FormItem>
+
+                <FormItem>
+                    <div style={{display: 'flex',justifyContent: 'flex-end'}}>
+                        <Button htmlType={'submit'} type={"primary"}>提交</Button>
+                        <Button style={{marginLeft: '20px'}} onClick={closeModel}>取消</Button>
+                    </div>
                 </FormItem>
             </Form>
 
