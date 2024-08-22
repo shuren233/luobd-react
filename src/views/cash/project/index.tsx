@@ -1,5 +1,5 @@
 
-import React, {useEffect, useState} from "react";
+import React, {ChangeEvent, useEffect, useState} from "react";
 import style from './project.module.scss'
 import FormItem from "antd/es/form/FormItem";
 import {Button, DatePicker, Input, Table, Pagination, Modal, Form, message} from "antd";
@@ -14,7 +14,6 @@ import moment from "moment";
 const App: React.FC = () => {
     const [visible,setVisible] = useState(false)
     const [title,setTitle] = useState('新增项目')
-    const [projectName,setProjectName] = useState('')
     const [form] = Form.useForm();
     const [list,setList] = useState<CashProject[]>([])
     const [total,setTotal] = useState(0);
@@ -46,9 +45,8 @@ const App: React.FC = () => {
     }
 
 
-    const edit = (record:any) => {
+    const edit = (record:CashProject) => {
         setTitle('编辑项目')
-        setProjectName(record.projectName)
         setInput({
             ...input,
             id:record.id,
@@ -70,7 +68,8 @@ const App: React.FC = () => {
         }
     }
 
-    const projectNameOnChange = (e:any) => {
+    const projectNameOnChange = (e:ChangeEvent<HTMLInputElement>) => {
+        console.log(e)
         setInput({
             ...input,
             projectName:e.target.value
@@ -84,7 +83,7 @@ const App: React.FC = () => {
         })
     }
 
-    const remarkOnChange = (e:any) => {
+    const remarkOnChange = (e:ChangeEvent<HTMLTextAreaElement>) => {
         setInput({
             ...input,
             remark:e.target.value
@@ -143,13 +142,13 @@ const App: React.FC = () => {
                 <FormItem name={'projectName'} label={'项目名称'} initialValue={input.projectName}>
                     {
                     }
-                    <Input value={projectName} onChange={projectNameOnChange} placeholder={'请输入项目名称'} />
+                    <Input  onChange={ projectNameOnChange} placeholder={'请输入项目名称'} />
                 </FormItem>
                 <FormItem name={'projectDate'} label={'项目日期'}  initialValue={moment(input.projectDate,'YYYY-MM-DD')}>
-                    <DatePicker   format={'YYYY-MM-DD'} value={input.projectDate} onChange={() =>projectDateOnChange} style={{width: '280px'}} />
+                    <DatePicker   format={'YYYY-MM-DD'}  onChange={() =>projectDateOnChange} style={{width: '280px'}} />
                 </FormItem>
-                <FormItem   name={'remark'} label={'备注信息'} initialValue={input.remark}>
-                    <TextArea  value={input.remark} onChange={remarkOnChange} placeholder={'请输入备注信息'} />
+                <FormItem    name={'remark'} label={'备注信息'} initialValue={input.remark}>
+                    <TextArea   onChange={remarkOnChange} placeholder={'请输入备注信息'} />
                 </FormItem>
             </Form>
 
@@ -180,12 +179,12 @@ const App: React.FC = () => {
                     dataSource={list}
                     rowKey={'id'}
                 >
-                 <Column key={'projectName'} title={'项目名称'} dataIndex={'projectName'} />
+                 <Column key={'projectName'} title={'项目名称'} dataIndex={'projectName'}  />
                     <Column key={'projectDate'} title={'项目日期'} dataIndex={'projectDate'} />
                     <Column key={'createTime'} title={'创建时间'} dataIndex={'createTime'} />
                     <Column key={'updateTime'} title={'更新时间'} dataIndex={'updateTime'} />
                     <Column key={'remark'} title={'备注'} dataIndex={'remark'} />
-                    <Column key={'option'} title={'操作'} dataIndex={'option'} render={(record) => (
+                    <Column<CashProject> key={'option'} title={'操作'} dataIndex={'option'} render={(_,record) => (
                         <div>
                             <a onClick={() => edit(record)}>编辑</a>
                             <a style={{marginLeft:'10px'}} onClick={() => deleteById(record.id)}>删除</a>

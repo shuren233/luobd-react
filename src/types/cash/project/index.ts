@@ -1,7 +1,7 @@
 import {PageInput} from "@/types/common";
 
 export interface CashProject {
-    id:string
+    id:number
     projectName:string,
     projectDate:string,
     remark:string,

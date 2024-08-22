@@ -1,8 +1,9 @@
 
-import React from "react";
+import React,{useState} from "react";
 import style from './category.module.scss'
 import {Button, Input, Pagination, Table, Tree} from "antd";
 import FormItem from "antd/es/form/FormItem";
+import {CategoryNode} from "@/types/core";
 const { TreeNode } = Tree;
 
 
@@ -45,24 +46,27 @@ const columns = [
 
 
 const App: React.FC = () => {
+
+    const [categories] = useState<CategoryNode[]>([])
+
+
+
     return (
         <>
         <div className={style.financeCategory}>
             <div className={style.left}>
-                <Tree
-                    defaultExpandedKeys={['0-0-0', '0-0-1']}
-                    defaultSelectedKeys={['0-0-0', '0-0-1']}
-                    defaultCheckedKeys={['0-0-0', '0-0-1']}
-                >
-                    <TreeNode title="parent 1" key="0-0">
-                        <TreeNode title="parent 1-0" key="0-0-0" disabled>
-                            <TreeNode title="leaf" key="0-0-0-0" disableCheckbox />
-                            <TreeNode title="leaf" key="0-0-0-1" />
-                        </TreeNode>
-                        <TreeNode title="parent 1-1" key="0-0-1">
-                            <TreeNode title={<span style={{ color: '#1890ff' }}>sss</span>} key="0-0-1-0" />
-                        </TreeNode>
-                    </TreeNode>
+                <Tree>
+                    {
+                        categories.map((item) => {
+                            return <TreeNode title={item.categoryName} key={item.id}>
+                                {
+                                    item.children.map((item) => {
+                                        return <TreeNode title={item.categoryName} key={item.id} />
+                                    })
+                                }
+                            </TreeNode>
+                        })
+                    }
                 </Tree>
             </div>
             <div className={style.right}>
