@@ -29,8 +29,8 @@ request.interceptors.request.use((config) => {
 
 // 响应拦截器
 request.interceptors.response.use((res) => {
-    if(res.data.code === 500) {
-        message.warning(res.data.msg)
+    if(res.data.code >= 500) {
+        message.error(res.data.msg)
     }
     if(res.data.code === 401) {
         removeToken();
@@ -39,19 +39,25 @@ request.interceptors.response.use((res) => {
     }
     return res.data;
 },(error) => {
-    const status = error.response.status;
-    switch (status) {
-        case 404:
-            message.error('Not found');
-            break;
+
+
+    if (error.code === 'ERR_NETWORK') {
+        message.error('后端服务异常');
+    }else {
+        const status = error.response.status;
+        switch (status) {
+            case 404:
+                message.error('Not found');
+                break;
             case 401:
                 message.error('Unauthorized');
                 window.location.href = '/login';
                 removeToken();
                 break;
-        default:
-            message.error('Server error');
-            break;
+            default:
+                message.error('Server error');
+                break;
+        }
     }
     return Promise.reject(new Error((error.message)))
 })

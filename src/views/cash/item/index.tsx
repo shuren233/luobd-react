@@ -6,7 +6,7 @@ import {Button, DatePicker, Input, Table, Pagination, Modal, Form, Select, Input
 import TextArea from "antd/es/input/TextArea";
 import {Option} from "antd/es/mentions";
 import Column from "antd/es/table/Column";
-import {CashItem, CashItemPageInput} from "@/types/cash/item";
+import {CashItem, CashItemPageInput,CashItemInput} from "@/types/cash/item";
 import {page,create,update,remove} from "@/api/cash/item";
 import {HttpResponse, SelectDTO} from "@/types/common";
 import {select} from "@/api/cash/project";
@@ -15,7 +15,7 @@ const App: React.FC = () => {
     const [visible,setVisible] = useState(false)
     const [title,setTitle] = useState('新增明细')
     const [selectList,setSelectList] = useState<SelectDTO[]>([])
-    const [pageInput,setPageInput] = useState<CashItemPageInput>({
+    const [pageInput] = useState<CashItemPageInput>({
         pageIndex:1,
         pageSize:15
     })
@@ -24,7 +24,7 @@ const App: React.FC = () => {
         amount:0,
         cashUserName:'',
         id:0,
-        projectId:null,
+        projectId:0,
         remark:''
     })
 
@@ -91,7 +91,7 @@ const App: React.FC = () => {
             amount:0,
             cashUserName:'',
             id:0,
-            projectId:null,
+            projectId:0,
             remark:''
         })
     }
@@ -214,7 +214,7 @@ const App: React.FC = () => {
                         <Column key={'createTime'} title={'创建时间'} dataIndex={'createTime'} />
                         <Column key={'updateTime'} title={'更新时间'} dataIndex={'updateTime'} />
                         <Column key={'remark'} title={'备注'} dataIndex={'remark'} />
-                        <Column key={'option'} title={'操作'} dataIndex={'option'} render={(value,record) => (
+                        <Column key={'option'} title={'操作'} dataIndex={'option'} render={(record) => (
                             <div>
                                 <a  onClick={() =>editor(record)}>编辑</a>
                                 <a style={{marginLeft:'10px'}} onClick={() => removeById(record.id)}>删除</a>

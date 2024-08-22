@@ -60,7 +60,7 @@ const App: React.FC = () => {
     }
 
 
-    const deleteById = async (id:string)  =>{
+    const deleteById = async (id:number)  =>{
          const res:HttpResponse<boolean> =  await remove(id)
         if(res.code === 200) {
             setTimeout(() => {
@@ -77,8 +77,7 @@ const App: React.FC = () => {
         })
     }
 
-    const projectDateOnChange = (date:any,dateString:string) => {
-        console.log(dateString)
+    const projectDateOnChange = (dateString:string):void => {
         setInput({
             ...input,
             projectDate:dateString
@@ -147,7 +146,7 @@ const App: React.FC = () => {
                     <Input value={projectName} onChange={projectNameOnChange} placeholder={'请输入项目名称'} />
                 </FormItem>
                 <FormItem name={'projectDate'} label={'项目日期'}  initialValue={moment(input.projectDate,'YYYY-MM-DD')}>
-                    <DatePicker   format={'YYYY-MM-DD'} value={input.projectDate} onChange={projectDateOnChange} style={{width: '280px'}} />
+                    <DatePicker   format={'YYYY-MM-DD'} value={input.projectDate} onChange={() =>projectDateOnChange} style={{width: '280px'}} />
                 </FormItem>
                 <FormItem   name={'remark'} label={'备注信息'} initialValue={input.remark}>
                     <TextArea  value={input.remark} onChange={remarkOnChange} placeholder={'请输入备注信息'} />
@@ -186,7 +185,7 @@ const App: React.FC = () => {
                     <Column key={'createTime'} title={'创建时间'} dataIndex={'createTime'} />
                     <Column key={'updateTime'} title={'更新时间'} dataIndex={'updateTime'} />
                     <Column key={'remark'} title={'备注'} dataIndex={'remark'} />
-                    <Column key={'option'} title={'操作'} dataIndex={'option'} render={(value,record) => (
+                    <Column key={'option'} title={'操作'} dataIndex={'option'} render={(record) => (
                         <div>
                             <a onClick={() => edit(record)}>编辑</a>
                             <a style={{marginLeft:'10px'}} onClick={() => deleteById(record.id)}>删除</a>
