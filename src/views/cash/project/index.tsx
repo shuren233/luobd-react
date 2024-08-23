@@ -12,41 +12,48 @@ import Column from "antd/es/table/Column";
 
 
 const App: React.FC = () => {
-
-
     const [visible,setVisible] = useState(false)
     const [title,setTitle] = useState('新增项目')
     const [form] = Form.useForm();
+    const [searchForm] = Form.useForm();
     const [list,setList] = useState<CashProject[]>([])
     const [total,setTotal] = useState(0);
     const [id,setId] = useState<number>(0)
+    const [pageSize,setPageSize] = useState(15)
+    const [pageIndex,setPageIndex] = useState(1)
     useEffect(() => {
-        getPage()
+        getPage(pageIndex,pageSize)
     },[])
 
 
 
 
 
-    const getPage= async () => {
+    const getPage=  (pageNo:number,size:number) => {
         const input:CashProjectPageInput = {
-            pageIndex:1,
-            pageSize:10,
-            projectName:'',
-            startProjectDate:'',
-            endProjectDate:''
+            pageIndex: pageNo,
+            pageSize: size,
+            projectName: searchForm.getFieldValue('searchInfo'),
+            startProjectDate: searchForm.getFieldValue('projectStartDate') ? dayjs(searchForm.getFieldValue('projectStartDate')).format('YYYY-MM-DD') : '',
+            endProjectDate: searchForm.getFieldValue('projectEndDate') ? dayjs(searchForm.getFieldValue('projectEndDate')).format('YYYY-MM-DD') : ''
         }
+      page(input).then(res => {
+          setList(res.data)
+          setTotal(res.total)
+      });
+    }
 
-      const res:HttpResponse<CashProject[]> =  await page(input);
-        setList(res.data)
-        setTotal(res.total)
+
+    const changePage =  (page:number, pageSize:number) => {
+         setPageIndex(page)
+         setPageSize(pageSize)
+         getPage(page,pageSize)
     }
 
 
     const edit = (record:CashProject) => {
         setTitle('编辑项目')
         setId(record.id)
-        console.log('edit',record.projectDate);
         form.setFieldsValue({
             projectName:record.projectName,
             projectDate:dayjs(record.projectDate),
@@ -54,14 +61,12 @@ const App: React.FC = () => {
         })
         setVisible(true)
     }
-
-
     const deleteById = async (id:number)  =>{
          const res:HttpResponse<boolean> =  await remove(id)
         if(res.code === 200) {
             setTimeout(() => {
                 message.success('删除成功')
-                getPage()
+                getPage(pageIndex,pageSize)
             },50)
         }
     }
@@ -83,7 +88,7 @@ const App: React.FC = () => {
             create(input).then(res => {
                 if(res.code === 200) {
                     setTimeout(() => {
-                        getPage()
+                        getPage(pageIndex,pageSize)
                         message.success('新增成功')
                         closeModel()
                     },50)
@@ -93,7 +98,7 @@ const App: React.FC = () => {
             update(input).then(res => {
                 if(res.code === 200) {
                     setTimeout(() => {
-                        getPage()
+                        getPage(pageIndex,pageSize)
                         message.success('修改成功')
                         closeModel()
                     },50)
@@ -116,7 +121,7 @@ const App: React.FC = () => {
                 width={'400px'}
                 footer={null}
             >
-            <Form  onFinish={submit} form={form} style={{marginTop: '20px'}} labelAlign={'left'}>
+            <Form   onFinish={submit} form={form} style={{marginTop: '20px'}} labelAlign={'left'}>
                 <FormItem name={'projectName'} label={'项目名称'} rules={[{ required: true, message: '请输入项目名称' }]}>
                     <Input    placeholder={'请输入项目名称'} />
                 </FormItem>
@@ -138,16 +143,27 @@ const App: React.FC = () => {
             </Modal>
         <div className={style.cashProject}>
             <div className={style.top}>
-                    <FormItem label='项目名称'>
-                        <Input placeholder="项目名称模糊搜索" />
+                <Form onFinish={() => getPage(pageIndex,pageSize)} form={searchForm} layout={"inline"}>
+                    <FormItem label='项目名称' name={'searchInfo'}>
+                        <Input  placeholder="项目名称模糊搜索" />
                     </FormItem>
-                    <FormItem label='项目开始日期' className={style.space}>
+                    <FormItem name={'projectStartDate'} label='项目开始日期' className={style.space}>
                         <DatePicker  />
                     </FormItem>
-                    <FormItem label='项目结束日期' className={style.space}>
+                    <FormItem name={'projectEndDate'} label='项目结束日期' className={style.space}>
                         <DatePicker  />
                     </FormItem>
-                    <Button type={"primary"} className={style.space} onClick={() => getPage()}>搜索</Button>
+                    <FormItem>
+                        <Button htmlType={'submit'} type={"primary"} className={style.space} >搜索</Button>
+                    </FormItem>
+                    <FormItem>
+                        <Button   className={style.space} onClick={() => {
+                            searchForm.resetFields(['searchInfo','projectStartDate','projectEndDate']);
+                            getPage(pageIndex,pageSize)
+                        }
+                        }>重置</Button>
+                    </FormItem>
+                </Form>
             </div>
             <div className="content">
                 <div className="tool">
@@ -177,7 +193,7 @@ const App: React.FC = () => {
                 </Table>
             </div>
             <div className="footer">
-                <Pagination defaultCurrent={1} total={total} />
+                <Pagination pageSizeOptions={['15', '20', '30']} showSizeChanger={true} onChange={changePage} total={total} />
             </div>
         </div>
         </>
