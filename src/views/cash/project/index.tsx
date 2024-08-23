@@ -177,6 +177,7 @@ const App: React.FC = () => {
                     style={{marginTop:'20px'}}
                     dataSource={list}
                     rowKey={'id'}
+                    pagination={false}
                 >
                  <Column key={'projectName'} title={'项目名称'} dataIndex={'projectName'}  />
                     <Column key={'projectDate'} title={'项目日期'} dataIndex={'projectDate'} />

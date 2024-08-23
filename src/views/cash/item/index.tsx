@@ -8,92 +8,47 @@ import {Option} from "antd/es/mentions";
 import Column from "antd/es/table/Column";
 import {CashItem, CashItemPageInput,CashItemInput} from "@/types/cash/item";
 import {page,create,update,remove} from "@/api/cash/item";
-import {HttpResponse, SelectDTO} from "@/types/common";
+import { SelectDTO} from "@/types/common";
 import {select} from "@/api/cash/project";
 
 const App: React.FC = () => {
     const [visible,setVisible] = useState(false)
     const [title,setTitle] = useState('新增明细')
     const [selectList,setSelectList] = useState<SelectDTO[]>([])
-    const [pageInput] = useState<CashItemPageInput>({
-        pageIndex:1,
-        pageSize:15
-    })
-
-    const [input,setInput]  = useState<CashItemInput>({
-        amount:0,
-        cashUserName:'',
-        id:0,
-        projectId:0,
-        remark:''
-    })
-
-
+    const [pageIndex,setPageIndex] = useState(1)
+    const [pageSize,setPageSize] = useState(15)
+    const [id,setId] = useState<number>(0)
     const [total,setTotal] = useState(0)
     const [list,setList] = useState<CashItem[]>([])
     const [form] = Form.useForm();
 
     useEffect(() => {
-        getPage();
+        getPage(pageIndex,pageSize);
     },[])
 
 
-    const getSelectList = async () => {
-        const res:HttpResponse<SelectDTO[]> = await select()
-        setSelectList(res.data)
+    const getSelectList =  () => {
+         select().then(res => {
+             setSelectList(res.data)
+         })
     }
 
 
-    const getPage = async () => {
-        const res:HttpResponse<CashItem[]> =  await page(pageInput)
-        setList(res.data)
-        setTotal(res.total)
-    }
-
-
-    const selectProject = (value:number) => {
-        setInput({
-            ...input,
-            projectId:value
-        })
-    }
-
-    const changeCashUserName = (e:any) => {
-        setInput({
-            ...input,
-            cashUserName:e.target.value
-        })
-    }
-
-    const changeAmount = (e:any) => {
-        setInput({
-            ...input,
-            amount:e
-        })
-    }
-
-    const changeRemark = (e:any) => {
-        setInput({
-            ...input,
-            remark:e.target.value
-        })
-    }
-
-
-    const closeModal = (flush:boolean) => {
-        console.log(flush)
-        if(flush) {
-            getPage()
+    const getPage =  (pageNo:number,size:number) => {
+        const pageInput:CashItemPageInput = {
+            pageIndex:pageNo,
+            pageSize:size
         }
-        setVisible(false)
-        form.resetFields()
-        setInput({
-            amount:0,
-            cashUserName:'',
-            id:0,
-            projectId:0,
-            remark:''
+        page(pageInput).then(res => {
+            setList(res.data)
+            setTotal(res.total)
         })
+    }
+
+
+    const closeModal = () => {
+        setVisible(false)
+        form.resetFields(['projectId','cashUserName','amount','remark'])
     }
 
 
@@ -103,7 +58,7 @@ const App: React.FC = () => {
             onOk: () => {
                 remove(id).then(res => {
                     if(res.code === 200) {
-                        getPage()
+                        getPage(pageIndex,pageSize)
                         setTimeout(() => {
                             message.success('删除成功')
                         })
@@ -114,26 +69,41 @@ const App: React.FC = () => {
     }
 
     const editor = (record:CashItem):void => {
-        setInput(
-            {
-                amount:record.amount,
-                cashUserName:record.cashUserName,
-                id:record.id,
-                projectId:record.projectId,
-                remark:record.remark
-            }
-        )
+        setId(record.id)
+        form.setFieldValue('projectId',record.projectId)
+        form.setFieldValue('cashUserName',record.cashUserName)
+        form.setFieldValue('amount',record.amount)
+        form.setFieldValue('remark',record.remark)
         setTitle('编辑明细')
         setVisible(true)
     }
 
 
 
+    const changePage = (pageNo:number,pageSize:number) => {
+        setPageIndex(pageNo)
+        setPageSize(pageSize)
+        getPage(pageNo,pageSize)
+    }
+
+
     const submit = () => {
+
+        const input:CashItemInput = {
+            id:id,
+            projectId:form.getFieldValue('projectId'),
+            cashUserName:form.getFieldValue('cashUserName'),
+            amount:form.getFieldValue('amount'),
+            remark:form.getFieldValue('remark')
+        }
+
+
+
         if (input.id === 0) {
             create(input).then(res => {
                 if(res.code === 200) {
-                    closeModal(true)
+                    closeModal()
+                    getPage(pageIndex,pageSize)
                     setTimeout(() => {
                         message.success('新增成功')
                     })
@@ -142,7 +112,8 @@ const App: React.FC = () => {
         }else {
             update(input).then(res => {
                 if(res.code === 200) {
-                    closeModal(true)
+                    closeModal()
+                    getPage(pageIndex,pageSize)
                     setTimeout(() => {
                         message.success('更新成功')
                     })
@@ -156,25 +127,25 @@ const App: React.FC = () => {
             <Modal
                 title={title}
                 open={visible}
-                onCancel={() => closeModal(false)}
+                onCancel={() => closeModal()}
                 onOk={submit}
                 width={'400px'}
             >
 
                 <Form  form={form} style={{marginTop: '20px'}} labelAlign={'left'}>
-                    <FormItem name={'projectName'} label={'礼金项目'} initialValue={input.projectId}>
-                        <Select allowClear  value={input.projectId}  onFocus={() => getSelectList()}  onSelect={selectProject}>
+                    <FormItem name={'projectId'} label={'礼金项目'} >
+                        <Select allowClear   onFocus={() => getSelectList()}>
                             {selectList.map(item => (<Option key={item.key} value={item.key}>{item.value}</Option>))}
                         </Select>
                     </FormItem>
-                    <FormItem name={'cashUserName'} label={'送礼人名'} initialValue={input.cashUserName}>
-                        <Input  value={input.cashUserName} onChange={changeCashUserName}  placeholder={'送礼人名'} />
+                    <FormItem name={'cashUserName'} label={'送礼人名'} >
+                        <Input     placeholder={'送礼人名'} />
                     </FormItem>
-                    <FormItem name={'amount'} label={'礼金金额'} initialValue={input.amount}>
-                        <InputNumber min={'0'}  value={input.amount}  onChange={changeAmount} style={{width: '280px'}} placeholder={'礼金金额'} />
+                    <FormItem name={'amount'} label={'礼金金额'} >
+                        <InputNumber min={'0'}    style={{width: '280px'}} placeholder={'礼金金额'} />
                     </FormItem>
-                    <FormItem  name={'remark'} label={'备注信息'} initialValue={input.remark}>
-                        <TextArea value={input.remark} onChange={changeRemark} />
+                    <FormItem  name={'remark'} label={'备注信息'} >
+                        <TextArea   />
                     </FormItem>
                 </Form>
 
@@ -193,7 +164,7 @@ const App: React.FC = () => {
                     <FormItem label='项目结束日期' className={style.space}>
                         <DatePicker  />
                     </FormItem>
-                    <Button type={"primary"} className={style.space} onClick={() => getPage()}>搜索</Button>
+                    <Button type={"primary"} className={style.space} onClick={() => getPage(pageIndex,pageSize)}>搜索</Button>
                 </div>
                 <div className="content">
                     <div className="tool">
@@ -206,6 +177,7 @@ const App: React.FC = () => {
                     <Table
                         dataSource={list}
                         style={{marginTop:'20px'}}
+                        pagination={false}
                     >
                         <Column key={'projectName'} title={'项目名称'} dataIndex={'projectName'} />
                         <Column key={'projectDate'} title={'项目日期'} dataIndex={'projectDate'} />
@@ -214,7 +186,7 @@ const App: React.FC = () => {
                         <Column key={'createTime'} title={'创建时间'} dataIndex={'createTime'} />
                         <Column key={'updateTime'} title={'更新时间'} dataIndex={'updateTime'} />
                         <Column key={'remark'} title={'备注'} dataIndex={'remark'} />
-                        <Column key={'option'} title={'操作'} dataIndex={'option'} render={(record) => (
+                        <Column<CashItem> key={'option'} title={'操作'} dataIndex={'option'} render={(_,record) => (
                             <div>
                                 <a  onClick={() =>editor(record)}>编辑</a>
                                 <a style={{marginLeft:'10px'}} onClick={() => removeById(record.id)}>删除</a>
@@ -222,8 +194,12 @@ const App: React.FC = () => {
                         )} />
                     </Table>
                 </div>
-                <div className="footer">
-                    <Pagination defaultCurrent={1} total={total} />
+                <div className={style.footer}>
+                    <Pagination
+                        total={total}
+                        showSizeChanger={true}
+                        pageSizeOptions={['10','15','20']}
+                        onChange={changePage} />
                 </div>
             </div>
         </>
