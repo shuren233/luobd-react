@@ -5,7 +5,7 @@ export interface CashProject {
     projectName:string,
     projectDate:string,
     remark:string,
-
+    totalAmount:number,
     createTime:string,
 }
 

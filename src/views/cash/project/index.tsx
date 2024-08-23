@@ -181,6 +181,7 @@ const App: React.FC = () => {
                 >
                  <Column key={'projectName'} title={'项目名称'} dataIndex={'projectName'}  />
                     <Column key={'projectDate'} title={'项目日期'} dataIndex={'projectDate'} />
+                    <Column key={'totalAmount'} title={'总金额'} dataIndex={'totalAmount'} />
                     <Column key={'createTime'} title={'创建时间'} dataIndex={'createTime'} />
                     <Column key={'updateTime'} title={'更新时间'} dataIndex={'updateTime'} />
                     <Column key={'remark'} title={'备注'} dataIndex={'remark'} />
