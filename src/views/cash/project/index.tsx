@@ -26,9 +26,6 @@ const App: React.FC = () => {
     },[])
 
 
-
-
-
     const getPage=  (pageNo:number,size:number) => {
         const input:CashProjectPageInput = {
             pageIndex: pageNo,

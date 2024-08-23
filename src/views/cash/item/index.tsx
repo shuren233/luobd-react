@@ -21,6 +21,7 @@ const App: React.FC = () => {
     const [total,setTotal] = useState(0)
     const [list,setList] = useState<CashItem[]>([])
     const [form] = Form.useForm();
+    const [searchForm] = Form.useForm()
 
     useEffect(() => {
         getPage(pageIndex,pageSize);
@@ -37,7 +38,11 @@ const App: React.FC = () => {
     const getPage =  (pageNo:number,size:number) => {
         const pageInput:CashItemPageInput = {
             pageIndex:pageNo,
-            pageSize:size
+            pageSize:size,
+            projectName:searchForm.getFieldValue('projectName'),
+            startProjectDate:searchForm.getFieldValue('projectStartDate'),
+            endProjectDate:searchForm.getFieldValue('projectEndDate'),
+            cashUserName:searchForm.getFieldValue('cashUserName')
         }
         page(pageInput).then(res => {
             setList(res.data)
@@ -46,10 +51,16 @@ const App: React.FC = () => {
     }
 
 
+
+
+
     const closeModal = () => {
         setVisible(false)
         form.resetFields(['projectId','cashUserName','amount','remark'])
+        setId(0)
     }
+
+
 
 
     const removeById =  (id:number) => {
@@ -152,19 +163,30 @@ const App: React.FC = () => {
             </Modal>
             <div className={style.cashProject}>
                 <div className={style.top}>
-                    <FormItem label='送礼人名称'>
-                        <Input placeholder="名称模糊查询" />
+                <Form onFinish={() => getPage(pageIndex,pageSize)} form={searchForm} layout={"inline"}>
+                    <FormItem  name={'cashUserName'} label='送礼人名称'>
+                        <Input  />
                     </FormItem>
-                    <FormItem label='项目名称' className={style.space}>
-                        <Input placeholder="项目名称模糊搜索" />
+                    <FormItem  name={'projectName'} label='项目名称'>
+                        <Input  />
                     </FormItem>
-                    <FormItem label='项目开始日期' className={style.space}>
+                    <FormItem name={'projectStartDate'} label='项目开始日期' >
                         <DatePicker  />
                     </FormItem>
-                    <FormItem label='项目结束日期' className={style.space}>
+                    <FormItem name={'projectEndDate'}  label='项目结束日期' >
                         <DatePicker  />
                     </FormItem>
-                    <Button type={"primary"} className={style.space} onClick={() => getPage(pageIndex,pageSize)}>搜索</Button>
+                    <FormItem>
+                        <Button htmlType={'submit'} type={"primary"}>搜索</Button>
+                    </FormItem>
+                    <FormItem>
+                        <Button onClick={() => {
+                            searchForm.resetFields(['cashUserName','projectName','projectStartDate','projectEndDate']);
+                            getPage(pageIndex,pageSize)
+                        }
+                        }>重置</Button>
+                    </FormItem>
+                </Form>
                 </div>
                 <div className="content">
                     <div className="tool">
