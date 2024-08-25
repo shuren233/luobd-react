@@ -25,7 +25,7 @@ request.interceptors.request.use((config) => {
 
 // 响应拦截器
 request.interceptors.response.use((res) => {
-    if(res.data.code >= 500) {
+    if(res.data.code >= 500 || res.data.code === 403) {
         message.error(res.data.msg)
     }
     if(res.data.code === 401) {

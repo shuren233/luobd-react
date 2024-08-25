@@ -11,3 +11,5 @@ export const create = (input:CategoryInput) => httpService.post<never,HttpRespon
 
 
 export const page = (input:CategoryPageInput) => httpService.post<never,HttpResponse<CoreCategory[]>>('/api/core/category/page',input)
+
+export const remove = (id:number) => httpService.get<never,HttpResponse<number>>('/api/core/category/delete?id=' + id)

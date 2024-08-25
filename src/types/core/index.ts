@@ -17,6 +17,7 @@ export interface CategoryInput {
     categoryName:string;
     parentId:number;
     type:string;
+    remark:string;
 }
 
 export interface CoreCategory {
@@ -28,15 +29,20 @@ export interface CoreCategory {
     updateTime:string;
 
     status:number;
+
+
+    remark:string;
+
 }
 
 
 export interface CategoryPageInput extends PageInput {
     type:string;
 
-    categoryName:string;
+    categoryName?:string;
 
-    parentId:number;
+    parentId?:number;
+
 }
 
 
