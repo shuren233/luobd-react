@@ -161,7 +161,7 @@ const App: React.FC = () => {
                 <div className={style.top}>
                     <div>
                         <Form form={searchForm} layout={'inline'}>
-                            <FormItem label={'分类名称'}>
+                            <FormItem name={'categoryName'} label={'分类名称'}>
                                 <Input style={{width: '200px'}}  />
                             </FormItem>
                             <FormItem>
