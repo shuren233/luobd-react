@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import style from './login.module.scss'
 import {Button, Card, Form, Input, message} from "antd";
@@ -11,7 +11,7 @@ import {HttpResponse} from "@/types/common";
 import FormItem from "antd/es/form/FormItem";
 import { UserOutlined,LockOutlined} from "@ant-design/icons";
 
-const App =  () => {
+const App:React.FC =  () => {
     const [captcha,setCaptcha] = useState("");
     const [captchaId,setCaptchaId] = useState("");
     const navigate = useNavigate();
@@ -86,7 +86,7 @@ const App =  () => {
                         </Form>
                     </Card>
 
-
+                <a href={"https://beian.miit.gov.cn/"} style={{color: '#ffffff',position: 'absolute',bottom: '10px',right: '45%',textDecoration: 'none'}} target="_blank">蜀IPC备2024091450号-1</a>
             </div>
         </>
     );

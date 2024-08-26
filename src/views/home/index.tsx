@@ -207,7 +207,7 @@ const App: React.FC = () => {
                     <Outlet/>
                 </Content>
                 <Footer style={{ textAlign: 'center',padding: 0,lineHeight: '48px' }}>
-                    蜀IPC备2024091450号-1
+                    <a href={"https://beian.miit.gov.cn/"} style={{color: '#000'}} target="_blank">蜀IPC备2024091450号-1</a>
                 </Footer>
             </Layout>
         </Layout>

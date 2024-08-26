@@ -1,12 +1,13 @@
 
 import React, {useEffect, useState} from "react";
-import {Button, DatePicker, Form, Input, InputNumber, message, Modal, Pagination, Select, Table} from "antd";
+import {Button, Cascader, DatePicker, Form, Input, InputNumber, message, Modal, Pagination, Table} from "antd";
 import FormItem from "antd/es/form/FormItem";
 import dayjs from "dayjs";
 import Column from "antd/es/table/Column";
-import {FinanceItem, FinanceItemPageInput} from "@/types/finance";
-import {page,remove} from "@/api/finance";
+import {FinanceItem, FinanceItemInput, FinanceItemPageInput} from "@/types/finance";
+import {page,remove,create,update} from "@/api/finance";
 import TextArea from "antd/es/input/TextArea";
+import {tree} from '@/api/core'
 
 
 const App: React.FC = () => {
@@ -18,19 +19,82 @@ const App: React.FC = () => {
     const [pageIndex,setPageIndex] = useState(1)
     const [pageSize,setPageSize] = useState(15)
     const [open,setOpen] = useState(false)
+    const [id] = useState(0)
+    const [options,setOptions] = useState<Option[]>([])
+
+
+
+    interface Option {
+        value: number;
+        label: string;
+        children?: Option[];
+        disabled?: boolean;
+    }
+
+
 
 
 
     useEffect(() => {
-        getList(pageIndex,pageSize)
+        getList(pageIndex,pageSize);
+        getTree()
     },[])
 
 
     const closeModal = () => {
         setOpen(false)
         form.resetFields(['categoryId','occurTime','amount','remark'])
-
     }
+
+    const getTree = () => {
+        tree('finance').then(res => {
+            const options = res.data?.map((item) => {
+                return {
+                    value: item.id,
+                    label: item.categoryName,
+                    children: item.children?.map((child) => {
+                        return {
+                            value: child.id,
+                            label: child.categoryName,
+                        }
+                    })
+                }
+            })
+            setOptions(options)
+        })
+    }
+
+
+    const onFinish = () => {
+        const categoryIds:number[] = form.getFieldValue('categoryId')
+        const input:FinanceItemInput = {
+            id:id,
+            categoryId: categoryIds[categoryIds.length - 1],
+            occurTime:dayjs(form.getFieldValue('occurTime')).format('YYYY-MM-DD HH:mm:ss'),
+            amount:form.getFieldValue('amount'),
+            remark:form.getFieldValue('remark')
+        }
+
+        if(id === 0) {
+            create(input).then(res => {
+                if (res.code === 200) {
+                    message.success('新增成功')
+                    closeModal()
+                    getList(pageIndex,pageSize)
+                }
+            })
+        }else {
+            update(input).then(res => {
+                if (res.code === 200) {
+                    message.success('修改成功')
+                    closeModal()
+                    getList(pageIndex,pageSize)
+                }
+            })
+        }
+    }
+
+
 
     const getList = (pageIndex:number,pageSize:number) => {
         const input:FinanceItemPageInput = {
@@ -43,7 +107,6 @@ const App: React.FC = () => {
         page(input).then(res => {
             setList(res.data)
             setTotal(res.total)
-            message.success('查询成功')
         })
 
     }
@@ -80,14 +143,12 @@ const App: React.FC = () => {
         <>
         <div>
             <Modal  title={'新增流水'} width={'420px'} open={open}  onCancel={() => closeModal()}  footer={false}>
-                <Form form={form} labelCol={{span:6}} style={{marginTop:'20px'}} >
+                <Form onFinish={onFinish} form={form} labelCol={{span:6}} style={{marginTop:'20px'}} >
                     <FormItem  name={'occurTime'} label={'发生时间'} rules={[{required:true,message:'发生时间不能为空'}]}>
-                        <DatePicker  />
+                        <DatePicker   format="YYYY-MM-DD HH:mm:ss"  showTime={{ defaultValue: dayjs('00:00:00', 'HH:mm:ss') }}/>
                     </FormItem>
                     <FormItem name={'categoryId'} label={'分类'} rules={[{required:true,message:'分类不能为空'}]}>
-                        <Select >
-                            <Select.Option value={1}>1</Select.Option>
-                        </Select>
+                        <Cascader options={options} />
                     </FormItem>
                     <FormItem name={'amount'} label={'金额'} rules={[{required:true,message:'金额不能为空'}]}>
                         <InputNumber min={'1'}/>
@@ -96,7 +157,7 @@ const App: React.FC = () => {
                         <TextArea/>
                     </FormItem>
                     <FormItem>
-                        <Button type={'primary'}>确认</Button>
+                        <Button type={'primary'} htmlType={'submit'}>确认</Button>
                         <Button style={{marginLeft:'20px'}} onClick={() => closeModal()}>取消</Button>
                     </FormItem>
                 </Form>
