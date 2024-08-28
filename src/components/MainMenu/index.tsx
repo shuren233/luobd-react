@@ -43,6 +43,23 @@ const items: MenuItem[] = [
         ]
     },
     {
+        label: "AI助手",
+        key: 'chat',
+        icon: <GiftFilled />,
+        children: [
+            {
+                label: "AI对话",
+                key: '/home/chatConversation',
+                icon: <ProjectFilled />
+            },
+            {
+                label: "数据管理",
+                key: '/home/chatData',
+                icon: <OrderedListOutlined />
+            },
+        ]
+    },
+    {
         label: "计划管理",
         key: 'plan',
         icon: <SolutionOutlined />,
@@ -86,23 +103,23 @@ const items: MenuItem[] = [
             },
         ]
     },
-    {
-        label: "系统管理",
-        key: 'system',
-        icon: <UserOutlined />,
-        children: [
-            {
-                label: "系统设置",
-                key: '/home/systemSet',
-                icon: <UserOutlined />
-            },
-            {
-                label: "系统监控",
-                key: '/home/systemMonitor',
-                icon: <UserOutlined />
-            }
-        ]
-    },
+    // {
+    //     label: "系统管理",
+    //     key: 'system',
+    //     icon: <UserOutlined />,
+    //     children: [
+    //         {
+    //             label: "系统设置",
+    //             key: '/home/systemSet',
+    //             icon: <UserOutlined />
+    //         },
+    //         {
+    //             label: "系统监控",
+    //             key: '/home/systemMonitor',
+    //             icon: <UserOutlined />
+    //         }
+    //     ]
+    // },
 
 ];
 
@@ -111,8 +128,6 @@ const App: React.FC = () => {
     const navigate = useNavigate();
     // 路由当前路由信息
     const location = useLocation();
-
-
     useEffect(() => {
 
         setFirstOpenKey();

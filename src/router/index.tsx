@@ -5,6 +5,8 @@ const Home = lazy(() => import('@/views/home'))
 const User = lazy(() => import('@/views/user'))
 const CashProject = lazy(() => import('@/views/cash/project'))
 const CashItem = lazy(() => import('@/views/cash/item'))
+const ChatConversation = lazy(() => import('@/views/chat/conversation'))
+const ChatData = lazy(() => import('@/views/chat/amount'))
 const PlanItem = lazy(() => import('@/views/plan/item'))
 const PlanSchedule = lazy(() => import('@/views/plan/schedule'))
 const FinanceCategory = lazy(() => import('@/views/finance/category'))
@@ -42,6 +44,18 @@ const router = [
                 path: '/home/cashItem',
                 element: <React.Suspense fallback={<div>加载中...</div>}>
                     <CashItem />
+                </React.Suspense>
+            },
+            {
+                path: '/home/chatConversation',
+                element: <React.Suspense fallback={<div>加载中...</div>}>
+                    <ChatConversation />
+                </React.Suspense>
+            },
+            {
+                path: '/home/chatData',
+                element: <React.Suspense fallback={<div>加载中...</div>}>
+                    <ChatData />
                 </React.Suspense>
             },
             {

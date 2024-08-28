@@ -47,6 +47,23 @@ const items: MenuItem[] = [
         ]
     },
     {
+        label: "AI助手",
+        key: 'chat',
+        icon: <GiftFilled />,
+        children: [
+            {
+                label: "AI对话",
+                key: '/home/chatConversation',
+                icon: <ProjectFilled />
+            },
+            {
+                label: "数据管理",
+                key: '/home/chatData',
+                icon: <OrderedListOutlined />
+            },
+        ]
+    },
+    {
         label: "计划管理",
         key: 'plan',
         icon: <SolutionOutlined />,
@@ -119,6 +136,14 @@ const menuMappers:MenuMapper[] = [
     {
         key: "/home/cashItem",
         items: ["礼金管理","礼金明细"]
+    },
+    {
+        key: "/home/chatConversation",
+        items: ["AI助手","AI对话"]
+    },
+    {
+        key: "/home/chatData",
+        items: ["AI助手","数据管理"]
     },
     {
         key: "/home/planItem",
