@@ -1,6 +1,7 @@
 
 import React,{lazy} from "react";
 import Login from '@/views/login'
+import Register from '@/views/register'
 const Home = lazy(() => import('@/views/home'))
 const User = lazy(() => import('@/views/user'))
 const CashProject = lazy(() => import('@/views/cash/project'))
@@ -110,6 +111,11 @@ const router = [
         path: '/login',
         // 重定向
         element: <Login />
+    },
+    {
+        path: '/register',
+        // 重定向
+        element: <Register />
     },
 
 ]

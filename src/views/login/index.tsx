@@ -65,7 +65,7 @@ const App:React.FC =  () => {
                     <Card className={style.loginBox}>
                         <div className={style.title}>
                             <h1>萝卜丁管家</h1>
-                            <p>Strive Everyday</p>
+                            <p>登录您的账户</p>
                         </div>
                         <Form form={form} onFinish={submit}>
                         <FormItem  name={'username'} rules={[{ required: true, message: '请输入用户名' }]}>
@@ -81,7 +81,10 @@ const App:React.FC =  () => {
                             </div>
                         </FormItem>
                         <FormItem>
-                            <Button htmlType={'submit'}  type={"primary"} size={"large"}   >登录</Button>
+                            <div>
+                                <Button htmlType={'submit'}  type={"primary"} size={"large"}>登录</Button>
+                                <Button style={{marginLeft: '10px'}} type={"primary"} size={"large"} >注册</Button>
+                            </div>
                         </FormItem>
                         </Form>
                     </Card>
