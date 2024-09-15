@@ -35,6 +35,9 @@ export interface CreateAccountInput {
 }
 
 export interface AccountPageInput extends PageInput {
+
+    searchInfo?:string
+
     accountName?:string
     email?:string
     phoneNumber?:string

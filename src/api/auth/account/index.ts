@@ -8,3 +8,6 @@ export const page = (input:AccountPageInput) => httpService.post<never,HttpRespo
 
 
 export const create = (input:CreateAccountInput) => httpService.post<never,HttpResponse<string>>('/api/core/account/create',input)
+
+
+export const deleteById = (id:number) => httpService.get<never,HttpResponse<boolean>>('/api/core/account/deleteById?id='+id)

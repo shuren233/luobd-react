@@ -3,7 +3,7 @@ import {Button, Form, Input, message, Modal, Pagination, Table} from "antd";
 import FormItem from "antd/es/form/FormItem";
 import Column from "antd/es/table/Column";
 import {AccountPageInput, AuthAccountPageDto, CreateAccountInput} from "@/types/auth";
-import {page,create} from '@/api/auth/account'
+import {page,create,deleteById} from '@/api/auth/account'
 import TextArea from "antd/es/input/TextArea";
 import Password from "antd/es/input/Password";
 
@@ -29,7 +29,8 @@ const App: React.FC = () => {
     const getPageList = (pageNo:number,size:number) => {
         const input:AccountPageInput = {
             pageIndex:pageNo,
-            pageSize:size
+            pageSize:size,
+            searchInfo:searchForm.getFieldValue('searchInfo')
         }
         page(input).then(res=>{
             setList(res.data)
@@ -43,6 +44,14 @@ const App: React.FC = () => {
     }
 
     const removeItem = (record:AuthAccountPageDto) => {
+
+        deleteById(record.id).then(res=>{
+            if(res.code === 200) {
+                message.success('删除成功')
+                getPageList(pageIndex,pageSize)
+            }
+        })
+
         console.log(record)
     }
 
@@ -119,28 +128,33 @@ const App: React.FC = () => {
             </Form>
         </Modal>
 
-        <div className={"authAccount"} style={{display:'flex', flexDirection:'column'}}>
+        <div className={"authAccount"} style={{display:'flex', flexDirection:'column',justifyContent:'space-between',height:'100%'}}>
             <div className="top">
                 <Form form={searchForm} layout={"inline"}>
-                    <FormItem name={"searchInfo"} label={"用户查询"} labelAlign={"left"} >
-                        <Input placeholder={"用户搜索"}/>
+                    <FormItem name={"searchInfo"} label={"用户查询"} labelAlign={"left"}>
+                        <Input placeholder={"账户名/用户名/邮箱/手机号"} style={{width:'200px'}} />
                     </FormItem>
                     <FormItem>
                         <Button htmlType={'submit'} type={"primary"} onClick={() => getPageList(pageIndex,pageSize)}>搜索</Button>
-                        <Button style={{marginLeft: '20px'}}>重置</Button>
+                        <Button style={{marginLeft: '20px'}}  onClick={() =>  {
+                            searchForm.resetFields(['searchInfo']);
+                            getPageList(pageIndex,pageSize);
+                        }
+                        }>重置</Button>
                     </FormItem>
                 </Form>
-            </div>
-            <div className="content">
-                <div className="tool">
+                <div className="tool" style={{marginTop:'20px'}}>
                     <Button type={"primary"} onClick={()=>{
                         setOpen(true);
                         setTitle("新增用户")
 
                     }}>新增</Button>
                 </div>
+            </div>
+            <div className="content" style={{flex:'1',height:'100%',display:'flex',flexDirection:'column',justifyContent:'space-between'}}>
+
                 <Table
-                    style={{marginTop:'20px'}}
+                    style={{marginTop:'10px',flex:'1'}}
                     dataSource={list}
                     rowKey={'id'}
                     pagination={false}
@@ -160,10 +174,11 @@ const App: React.FC = () => {
 
                     />
                 </Table>
+                <div className={"footer"} style={{marginTop:'20px',height:'50px'}}>
+                    <Pagination pageSizeOptions={['15', '20', '30']} showSizeChanger={true}  onChange={changePage} total={total} />
+                </div>
             </div>
-            <div className={"footer"}>
-                <Pagination pageSizeOptions={['15', '20', '30']} showSizeChanger={true}  onChange={changePage} total={total} />
-            </div>
+
         </div>
 
     </>
