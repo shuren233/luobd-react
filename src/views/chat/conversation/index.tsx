@@ -31,8 +31,8 @@ const records:ConversationRecordDTO[] = [
 
 
 const App: React.FC = () => {
-
-    const [printMessage,setprintMessage] = useState<string>('');
+    const [printMessage,setPrintMessage] = useState<string>('');
+    const [data,setData] = useState<ConversationRecordDTO[]>(records);
     const [conversations,setConversations] = useState<ConversationDTO[]>([]);
     const [conversationId,setConversationId] = useState<number>(0);
     const [inputContent,setInputContent] = useState<string>('');
@@ -49,13 +49,25 @@ const App: React.FC = () => {
         if (!isConnect) {
             const evtSource = new EventSource("http://localhost:8080/api/chatglm/conversation");
             evtSource.onmessage = function(event:MessageEvent) {
-                console.log(event);
-                setprintMessage(text=>text + event.data)
+                if(event.data === 'complete') {
+                    setData((data) => [...data,{
+                        id: 3,
+                        conversationId: conversationId,
+                        content: printMessage,
+                        createTime: '2023-05-05',
+                        chatType: 'text',
+                        chatModel: 'chatglm',
+                        isQuestion: false
+                    }])
+                    setPrintMessage('')
+                }else {
+                    setPrintMessage(text=>text + event.data)
+                }
             }
             evtSource.onopen = function(event:Event) {
                 console.log("SSE 服务连接成功",event)
                 setIsConnect(true)
-                setprintMessage('');
+                setPrintMessage('');
             }
             evtSource.onerror = function(event:Event) {
                 console.log(event)
@@ -136,7 +148,7 @@ const App: React.FC = () => {
                 flex: '1',backgroundColor: '#fff',borderRadius: '10px'}}>
                 <div className="content" style={{flex: '1',display: 'flex',flexDirection: 'column',justifyContent: 'end'}} >
                     {
-                        records.map((data) => {
+                        data.map((data) => {
                             return (
                                 <div className="item" style={data.isQuestion ? {width: '100%',height: '60px',display: 'flex',padding: '10px',justifyContent: 'flex-end'} :{ justifyContent: 'flex-start',width: '100%',height: '60px',display: 'flex',padding: '10px'}}>
                                     <div>{data.content}</div>

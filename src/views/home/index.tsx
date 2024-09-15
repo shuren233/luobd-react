@@ -107,23 +107,41 @@ const items: MenuItem[] = [
             },
         ]
     },
+    // {
+    //     label: "系统管理",
+    //     key: 'system',
+    //     icon: <UserOutlined />,
+    //     children: [
+    //         {
+    //             label: "系统设置",
+    //             key: '/home/systemSet',
+    //             icon: <UserOutlined />
+    //         },
+    //         {
+    //             label: "系统监控",
+    //             key: '/home/systemMonitor',
+    //             icon: <UserOutlined />
+    //         }
+    //     ]
+    // },
     {
-        label: "系统管理",
-        key: 'system',
+        label: "认证授权",
+        key: 'auth',
         icon: <UserOutlined />,
         children: [
             {
-                label: "系统设置",
-                key: '/home/systemSet',
+                label: "用户列表",
+                key: '/home/userList',
                 icon: <UserOutlined />
             },
             {
-                label: "系统监控",
-                key: '/home/financeRecord',
+                label: "角色管理",
+                key: '/home/roleManage',
                 icon: <UserOutlined />
             }
         ]
-    },
+    }
+
 
 ];
 
@@ -168,6 +186,22 @@ const menuMappers:MenuMapper[] = [
     {
         key: "/home/financePlan",
         items: ["财务管理","财务计划"]
+    },
+    {
+        key: "/home/systemSet",
+        items: ["系统管理","系统设置"]
+    },
+    {
+        key: "/home/systemMonitor",
+        items: ["系统管理","系统监控"]
+    },
+    {
+        key: "/home/userList",
+        items: ["认证授权","用户列表"]
+    },
+    {
+        key: "/home/roleManage",
+        items: ["认证授权","角色管理"]
     }
 ]
 
@@ -232,7 +266,7 @@ const App: React.FC = () => {
                     <Outlet/>
                 </Content>
                 <Footer style={{ textAlign: 'center',padding: 0,lineHeight: '48px' }}>
-                    <a href={"https://beian.miit.gov.cn/"} style={{color: '#000'}} target="_blank">蜀IPC备2024091450号-1</a>
+                    <a href={"https://beian.miit.gov.cn/"} style={{color: '#000'}} target="_blank">蜀ICP备2024091450号-1</a>
                 </Footer>
             </Layout>
         </Layout>

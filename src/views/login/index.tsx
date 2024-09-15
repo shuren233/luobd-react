@@ -86,7 +86,7 @@ const App:React.FC =  () => {
                         </Form>
                     </Card>
 
-                <a href={"https://beian.miit.gov.cn/"} style={{color: '#ffffff',position: 'absolute',bottom: '10px',right: '45%',textDecoration: 'none'}} target="_blank">蜀IPC备2024091450号-1</a>
+                <a href={"https://beian.miit.gov.cn/"} style={{color: '#ffffff',position: 'absolute',bottom: '10px',right: '45%',textDecoration: 'none'}} target="_blank">蜀ICP备2024091450号-1</a>
             </div>
         </>
     );

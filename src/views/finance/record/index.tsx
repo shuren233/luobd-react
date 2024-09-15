@@ -26,6 +26,7 @@ const App: React.FC = () => {
 
     interface Option {
         value: number;
+        key: number;
         label: string;
         children?: Option[];
         disabled?: boolean;
@@ -51,9 +52,11 @@ const App: React.FC = () => {
             const options = res.data?.map((item) => {
                 return {
                     value: item.id,
+                    key: item.id,
                     label: item.categoryName,
                     children: item.children?.map((child) => {
                         return {
+                            key: child.id,
                             value: child.id,
                             label: child.categoryName,
                         }
@@ -148,7 +151,7 @@ const App: React.FC = () => {
                         <DatePicker   format="YYYY-MM-DD HH:mm:ss"  showTime={{ defaultValue: dayjs('00:00:00', 'HH:mm:ss') }}/>
                     </FormItem>
                     <FormItem name={'categoryId'} label={'分类'} rules={[{required:true,message:'分类不能为空'}]}>
-                        <Cascader options={options} />
+                        <Cascader options={options}  />
                     </FormItem>
                     <FormItem name={'amount'} label={'金额'} rules={[{required:true,message:'金额不能为空'}]}>
                         <InputNumber min={'1'}/>

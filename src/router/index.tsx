@@ -13,6 +13,8 @@ const FinanceCategory = lazy(() => import('@/views/finance/category'))
 const FinanceRecord = lazy(() => import('@/views/finance/record'))
 const FinancePlan = lazy(() => import('@/views/finance/plan'))
 const FinanceStatistics = lazy(() => import('@/views/finance/statistics'))
+const AuthRoles = lazy(() => import('@/views/auth/roles'))
+const AuthAccount = lazy(() => import('@/views/auth/account'))
 
 // 重定向组件
 import {Navigate} from "react-router-dom";
@@ -93,6 +95,14 @@ const router = [
                 element: <React.Suspense fallback={<div>加载中...</div>}>
                     <FinanceStatistics />
                 </React.Suspense>
+            },
+            {
+                path: '/home/userList',
+                element: <React.Suspense fallback={<div>加载中...</div>}> <AuthAccount /> </React.Suspense>
+            },
+            {
+                path: '/home/roleManage',
+                element: <React.Suspense fallback={<div>加载中...</div>}> <AuthRoles /> </React.Suspense>
             },
         ]
     },
