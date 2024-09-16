@@ -32,3 +32,13 @@ export interface ConversationInput {
     conversationName: string;
 
 }
+
+
+export interface ChatInput {
+
+    model: string;
+
+    prompt: string;
+
+}
+
