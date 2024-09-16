@@ -1,5 +1,5 @@
 import httpService from "@/api/httpService";
-import {AccountPageInput, AuthAccountPageDto, CreateAccountInput} from "@/types/auth";
+import {AccountPageInput, AuthAccountPageDto, CreateAccountInput, RegisterInput} from "@/types/auth";
 import {HttpResponse} from "@/types/common";
 
 
@@ -11,3 +11,7 @@ export const create = (input:CreateAccountInput) => httpService.post<never,HttpR
 
 
 export const deleteById = (id:number) => httpService.get<never,HttpResponse<boolean>>('/api/core/account/deleteById?id='+id)
+export const register = (input:RegisterInput) => httpService.post<never,HttpResponse<string>>('/api/core/account/register',input)
+
+
+export const sendCheckCodeEmail = (email:string) => httpService.get<never,HttpResponse<boolean>>('/api/core/account/sendCheckCodeEmail?emailUser='+email)

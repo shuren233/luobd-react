@@ -8,3 +8,7 @@ export const loginRequest = (input:LoginInput) => httpService.post<never,HttpRes
 
 export const getCaptchaBase64 = () => httpService.get<never,HttpResponse<Base64Captcha>>('/api/captcha/getCaptchaBase64')
 
+
+
+
+

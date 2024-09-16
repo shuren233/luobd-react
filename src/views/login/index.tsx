@@ -3,6 +3,7 @@ import {useNavigate} from "react-router-dom";
 import style from './login.module.scss'
 import {Button, Card, Form, Input, message} from "antd";
 import init from './init.ts'
+import MD5 from 'crypto-js/md5'
 import {Base64Captcha, LoginInput} from "@/types/auth";
 import {useDispatch} from "react-redux";
 import {setToken} from "@/store/modules/userStore";
@@ -37,7 +38,7 @@ const App:React.FC =  () => {
     const submit =  async () => {
         const input:LoginInput = {
             username: username,
-            password: password,
+            password: MD5(password).toString(),
             captcha: checkCode,
             captchaId: captchaId
         }

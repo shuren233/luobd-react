@@ -1,11 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import style from './login.module.scss'
-import {Button, Card, Form, Input} from "antd";
+import MD5 from 'crypto-js/md5'
+import {Button, Card, Form, Input, message} from "antd";
 import init from './init.ts'
 
 import FormItem from "antd/es/form/FormItem";
 import { UserOutlined,LockOutlined} from "@ant-design/icons";
+import {register,sendCheckCodeEmail} from "@/api/auth/account";
+import {RegisterInput} from "@/types/auth";
 
 const App:React.FC =  () => {
 
@@ -37,38 +40,60 @@ const App:React.FC =  () => {
     }, [count]);
 
 
-    const enterLoading = () => {
-        setLoading(true)
-        setCount(59);
+
+    const sendCheckCode = async () => {
+        const email:string = form.getFieldValue('email');
+        if (!email) {
+            message.error('请输入邮箱地址')
+            return;
+        }
+        if(!/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(email)) {
+            message.error('邮箱地址不合法')
+            return;
+        }
+        sendCheckCodeEmail(email).then(res => {
+            if (res.code === 200) {
+                setLoading(true)
+                setCount(59);
+            }
+        })
     }
 
     const submit =  async () => {
-        console.log('提交表单')
-        navigate('/login')
+        const val = MD5(form.getFieldValue('password'));
+        const input:RegisterInput = {
+            accountName: form.getFieldValue('accountName'),
+            email: form.getFieldValue('email'),
+            password: val.toString(),
+            checkCode: form.getFieldValue('checkCode')
+        }
+        register(input).then(res => {
+            if (res.code === 200) {
+                message.success('注册成功,跳转登录页面');
+                navigate('/login')
+            }
+        })
     }
-
-
 
     return (
         <>
             <div  className={style.login}>
                 <canvas id="canvas" style={{display:'block'}}>
                 </canvas>
-
-
                     <Card className={style.loginBox}>
                         <div className={style.title}>
                             <h1>萝卜丁管家</h1>
                             <p>注册您的账户</p>
                         </div>
                         <Form form={form} onFinish={submit}>
-                        <FormItem  name={'username'} rules={[{ required: true, message: '请输入用户名' }]}>
-                            <Input prefix={<UserOutlined />}  placeholder="用户名"  />
+                        <FormItem  name={'accountName'} rules={[{ required: true, message: '请输入账户名' }]}>
+                            <Input prefix={<UserOutlined />}  placeholder="账户名"  />
                         </FormItem>
-                            <FormItem  name={'email'} rules={[{ required: true, message: '请输入邮箱地址' }]}>
+                            <FormItem  name={'email'} rules={[{ required: true, message: '请输入邮箱地址' },
+                                {pattern: /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/, message: '请输入正确的邮箱地址',validateTrigger: 'blur'}]}>
                                 <div className="email" style={{display: 'flex'}}>
                                     <Input prefix={<UserOutlined />}  placeholder="邮箱地址" style={{width: '72%'}}  />
-                                    <Button type={"primary"} loading={loading}  style={{marginLeft: '10px'}} onClick={() => enterLoading()}>{tip}</Button>
+                                    <Button type={"primary"} loading={loading}  style={{marginLeft: '10px'}} onClick={() => sendCheckCode()}>{tip}</Button>
                                 </div>
                             </FormItem>
                             <FormItem name={'checkCode'} rules={[{ required: true, message: '请输入验证码' }]}>
@@ -77,7 +102,15 @@ const App:React.FC =  () => {
                         <FormItem name={'password'} rules={[{ required: true, message: '请输入密码' }]}>
                             <Input.Password prefix={<LockOutlined />}   placeholder="密码"  />
                         </FormItem>
-                            <FormItem name={'confirmPassword'} rules={[{ required: true, message: '请输入二次确认密码' }]}>
+                            <FormItem name={'confirmPassword'} rules={[{ required: true, message: '请输入二次确认密码' },{
+                                validator:(_,value,callback)=> {
+                                    if (value !== form.getFieldValue('password')) {
+                                        callback('两次密码不一致')
+                                    } else {
+                                        callback()
+                                    }
+                                }
+                            }]}>
                                 <Input.Password prefix={<LockOutlined />}   placeholder="二次确认密码"  />
                             </FormItem>
                         <FormItem>

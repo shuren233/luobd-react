@@ -13,6 +13,7 @@
     "@reduxjs/toolkit": "^2.2.7",
     "antd": "^5.19.4",
     "axios": "^1.7.3",
+    "crypto-js": "^4.2.0",
     "moment": "^2.30.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -23,6 +24,7 @@
     "reset-css": "^5.0.2"
   },
   "devDependencies": {
+    "@types/crypto-js": "^4.2.2",
     "@types/node": "^22.0.0",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",

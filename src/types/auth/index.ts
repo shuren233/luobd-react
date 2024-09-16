@@ -34,6 +34,14 @@ export interface CreateAccountInput {
     phoneNumber?:string
 }
 
+
+export interface RegisterInput {
+    accountName:string
+    password:string
+    email:string
+    checkCode:string
+}
+
 export interface AccountPageInput extends PageInput {
 
     searchInfo?:string
