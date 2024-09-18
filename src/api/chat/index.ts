@@ -6,6 +6,8 @@ const headers = {
     'Content-Type': 'application/json;charset=utf-8'
 }
 
+const HOST = import.meta.env.VITE_API_URL;
+
 export const createConversation = (input:ConversationInput) => httpService.post<never,HttpResponse<number>>('/api/chat/conversation/create',input)
 
 
@@ -16,7 +18,7 @@ export const chatConversation = () => httpService.get<never,HttpResponse<string>
 
 
 export const completions = (data:ChatInput) => {
-    return fetch('http://localhost:8080/api/chatglm/conversation', {
+    return fetch(`${HOST}/api/chatglm/conversation`, {
         method: 'post',
         headers: headers,
         body: JSON.stringify(data),

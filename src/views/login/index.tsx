@@ -84,7 +84,7 @@ const App:React.FC =  () => {
                         <FormItem>
                             <div>
                                 <Button htmlType={'submit'}  type={"primary"} size={"large"}>登录</Button>
-                                <Button style={{marginLeft: '10px'}} type={"primary"} size={"large"} >注册</Button>
+                                <Button style={{marginLeft: '10px'}} type={"primary"} size={"large"}  onClick={() => navigate('/register')}>注册</Button>
                             </div>
                         </FormItem>
                         </Form>
