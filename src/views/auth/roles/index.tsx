@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, Form, Input, message, Modal, Pagination, Select, Table} from "antd";
+import {Button, Drawer, Form, Input, message, Modal, Pagination, Select, Table} from "antd";
 import FormItem from "antd/es/form/FormItem";
 import Column from "antd/es/table/Column";
 import {
@@ -36,13 +36,13 @@ const App: React.FC = () => {
     const [title,setTitle] = useState('新增用户')
     const [selectRoleId,setSelectRoleId] = useState<number>(0)
     const [selectedRowKeys,setSelectedRowKeys] = useState<number[]>([])
+    //  抽屉组件
+    const [drawerOpen,setDrawerOpen] = useState<boolean>(false)
 
 
     useEffect(() => {
         getPageList(pageIndex,pageSize);
     },[])
-
-
     const getPageList = (pageNo:number,size:number) => {
         const input:RolePageInput = {
             pageIndex:pageNo,
@@ -84,7 +84,7 @@ const App: React.FC = () => {
     const modalChangePage =  (page:number, pageSize:number) => {
         setTablePageIndex(page)
         setTablePageSize(pageSize)
-        getAccountPageList(page,pageSize)
+        getAccountPageList(page,pageSize,selectRoleId)
     }
 
     const changePage =  (page:number, pageSize:number) => {
@@ -112,27 +112,35 @@ const App: React.FC = () => {
     const openAccountTable = (record:AuthRolePageDto) => {
         setTableOpen(true)
         setSelectRoleId(record.id)
-        getAccountPageList(tablePageIndex,tablePageSize)
+        getAccountPageList(tablePageIndex,tablePageSize,selectRoleId)
     }
 
     const closeAccountTable = () => {
         setTableOpen(false)
         setSelectRoleId(0)
         setSelectedRowKeys([])
+        setTablePageIndex(1)
+        setTablePageSize(15)
     }
 
 
 
-    const getAccountPageList = (pageNo:number,size:number) => {
+    const getAccountPageList = (pageNo:number,size:number,roleId:number) => {
         const input:AccountPageInput = {
             pageIndex:pageNo,
             pageSize:size,
+        }
+        if(roleId !== 0) {
+            input.roleId = roleId
         }
         accountPage(input).then(res=>{
             setTableList(res.data)
             setTableTotal(res.total)
         })
     }
+
+
+
 
     const submit = () => {
         const input:CreateRoleInput = {
@@ -160,8 +168,41 @@ const App: React.FC = () => {
         }
     };
 
+    const drawerOnClose = () =>  {
+        setDrawerOpen(false)
+        setSelectRoleId(0)
+        setTablePageIndex(1)
+        setTablePageSize(15)
+    }
+
+
+    const openDrawer = (id:number) => {
+        setDrawerOpen(true)
+        setSelectRoleId(() => id)
+        getAccountPageList(tablePageIndex,tablePageSize,id)
+    }
+
+
 
     return <>
+
+
+        <Drawer title="账户列表" onClose={drawerOnClose} open={drawerOpen} width={'50%'}>
+            <Table<AuthAccountPageDto>
+                dataSource={tableList}
+                rowKey={'id'}
+                pagination={false}
+            >
+                <Column key={"accountName"} title={"账号名称"} dataIndex={"accountName"} align={"left"}/>
+                <Column key={"trueName"} title={"用户名称"} dataIndex={"trueName"} align={"left"}/>
+                <Column key={"email"} title={"电子邮箱"} dataIndex={"email"} align={"left"}/>
+                <Column key={"phoneNumber"} title={"手机号码"} dataIndex={"phoneNumber"} align={"left"}/>
+                <Column key={"remark"} title={"备注"} ellipsis={true} dataIndex={"remark"} align={"left"}/>
+            </Table>
+            <div className={"footer"} style={{marginTop:'20px',height:'50px'}}>
+                <Pagination pageSizeOptions={['15', '20', '30']} showSizeChanger={true}  onChange={modalChangePage} total={tableTotal} />
+            </div>
+        </Drawer>
 
         <Modal title={title} open={tableOpen}
                onClose={closeAccountTable}
@@ -257,7 +298,13 @@ const App: React.FC = () => {
                     rowKey={'id'}
                     pagination={false}
                 >
-                    <Column key={"roleName"} title={"角色名称"} dataIndex={"roleName"}/>
+                    <Column key={"roleName"} title={"角色名称"} dataIndex={"roleName"}
+                            render={(_,item:AuthRolePageDto)=>
+                                <a onClick={() => openDrawer(item.id)}>
+                                    {item.roleName}
+                                </a>
+                            }
+                    />
                     <Column key={"roleKey"} title={"角色Key"} dataIndex={"roleKey"}/>
                     <Column key={"userCount"} title={"用户数量"} dataIndex={"userCount"}/>
                     <Column<AuthRolePageDto> key={"defaulted"} title={"是否默认"} dataIndex={"phoneNumber"}

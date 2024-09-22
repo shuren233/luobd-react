@@ -24,6 +24,8 @@ export interface AuthAccountPageDto {
     phoneNumber:string
     remark:string
     createTime:string
+
+    roleIds?:number[]
 }
 
 export interface CreateAccountInput {
@@ -49,6 +51,11 @@ export interface AccountPageInput extends PageInput {
     accountName?:string
     email?:string
     phoneNumber?:string
+
+
+    roleId?:number
+
+
 
 }
 
