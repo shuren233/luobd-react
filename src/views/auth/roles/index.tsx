@@ -2,22 +2,40 @@ import React, {useEffect, useState} from "react";
 import {Button, Form, Input, message, Modal, Pagination, Select, Table} from "antd";
 import FormItem from "antd/es/form/FormItem";
 import Column from "antd/es/table/Column";
-import {AuthRolePageDto, CreateRoleInput, RolePageInput} from "@/types/auth";
-import {page,create,deleteById} from '@/api/auth/role'
+import {
+    AccountPageInput,
+    AuthAccountPageDto,
+    AuthRolePageDto,
+    CreateRoleInput,
+    RolePageInput,
+    SetRoleAccountsInput
+} from "@/types/auth";
+import {page, create, deleteById, setRoleAccounts} from '@/api/auth/role'
+import {page as accountPage} from '@/api/auth/account'
 import TextArea from "antd/es/input/TextArea";
+import {TableRowSelection} from "antd/es/table/interface";
+
 
 
 
 const App: React.FC = () => {
 
     const [searchForm] = Form.useForm();
+    const [modalForm] = Form.useForm();
     const [form] = Form.useForm();
     const [list,setList] = useState<AuthRolePageDto[]>([])
     const [open,setOpen] = useState<boolean>(false)
+    const [tableOpen,setTableOpen] = useState<boolean>(false)
+    const [tablePageIndex,setTablePageIndex] = useState(1)
+    const [tablePageSize,setTablePageSize] = useState(15)
+    const [tableList,setTableList] = useState<AuthAccountPageDto[]>([])
+    const [tableTotal,setTableTotal] = useState<number>(0);
     const [total,setTotal] = useState<number>(0);
     const [pageSize,setPageSize] = useState(15)
     const [pageIndex,setPageIndex] = useState(1)
     const [title,setTitle] = useState('新增用户')
+    const [selectRoleId,setSelectRoleId] = useState<number>(0)
+    const [selectedRowKeys,setSelectedRowKeys] = useState<number[]>([])
 
 
     useEffect(() => {
@@ -37,6 +55,38 @@ const App: React.FC = () => {
             setTotal(res.total)
         })
     }
+
+
+    const requestSetRole = () => {
+
+        if(selectedRowKeys.length === 0) {
+            message.error('请选择要设置的用户')
+            return
+        }
+        if(selectRoleId === 0) {
+            message.error('请选择要设置的角色')
+            return
+        }
+        const input:SetRoleAccountsInput = {
+            accountIds:selectedRowKeys,
+            roleId:selectRoleId
+        }
+        setRoleAccounts(input).then(res=>{
+            if(res.code === 200) {
+                message.success('设置成功')
+                closeAccountTable()
+                getPageList(pageIndex,pageSize)
+            }
+        })
+    }
+
+
+    const modalChangePage =  (page:number, pageSize:number) => {
+        setTablePageIndex(page)
+        setTablePageSize(pageSize)
+        getAccountPageList(page,pageSize)
+    }
+
     const changePage =  (page:number, pageSize:number) => {
         setPageIndex(page)
         setPageSize(pageSize)
@@ -58,6 +108,32 @@ const App: React.FC = () => {
         console.log(record)
     }
 
+
+    const openAccountTable = (record:AuthRolePageDto) => {
+        setTableOpen(true)
+        setSelectRoleId(record.id)
+        getAccountPageList(tablePageIndex,tablePageSize)
+    }
+
+    const closeAccountTable = () => {
+        setTableOpen(false)
+        setSelectRoleId(0)
+        setSelectedRowKeys([])
+    }
+
+
+
+    const getAccountPageList = (pageNo:number,size:number) => {
+        const input:AccountPageInput = {
+            pageIndex:pageNo,
+            pageSize:size,
+        }
+        accountPage(input).then(res=>{
+            setTableList(res.data)
+            setTableTotal(res.total)
+        })
+    }
+
     const submit = () => {
         const input:CreateRoleInput = {
             roleName:form.getFieldValue('roleName'),
@@ -77,7 +153,49 @@ const App: React.FC = () => {
         form.resetFields(['roleName','roleKey',"remark"]);
     }
 
+    const rowSelection: TableRowSelection<AuthAccountPageDto> = {
+        selectedRowKeys,
+        onChange: (selectedRowKeys: React.Key[]) => {
+            setSelectedRowKeys(selectedRowKeys as number[])
+        }
+    };
+
+
     return <>
+
+        <Modal title={title} open={tableOpen}
+               onClose={closeAccountTable}
+               onCancel={closeAccountTable}
+               width={'800px'}
+               footer={null}>
+            <Table<AuthAccountPageDto>
+                rowSelection={rowSelection}
+                style={{marginTop:'10px',flex:'1'}}
+                dataSource={tableList}
+                rowKey={'id'}
+                pagination={false}
+            >
+                <Column key={"accountName"} title={"账号名称"} dataIndex={"accountName"}/>
+                <Column key={"trueName"} title={"用户名称"} dataIndex={"trueName"}/>
+                <Column key={"email"} title={"电子邮箱"} dataIndex={"email"}/>
+                <Column key={"phoneNumber"} title={"手机号码"} dataIndex={"phoneNumber"}/>
+                <Column key={"remark"} title={"备注"} dataIndex={"remark"}/>
+            </Table>
+            <div className={"footer"} style={{marginTop:'20px',height:'50px'}}>
+                <Pagination pageSizeOptions={['15', '20', '30']} showSizeChanger={true}  onChange={modalChangePage} total={tableTotal} />
+            </div>
+            <Form form={modalForm} labelAlign={'left'} onFinish={requestSetRole} autoComplete={'off'}>
+                <FormItem>
+                    <div style={{display:'flex', justifyContent:'flex-end'}}>
+                        <Button type={"primary"} htmlType={'submit'}>确定</Button>
+                        <Button style={{marginLeft: '20px'}} onClick={closeAccountTable}>取消</Button>
+                    </div>
+                </FormItem>
+            </Form>
+        </Modal>
+
+
+
         <Modal title={title} open={open} width={'400px'}
                onClose={closeModel}
                onCancel={closeModel}
@@ -154,6 +272,7 @@ const App: React.FC = () => {
                                                 render={(_,item:AuthRolePageDto)=>
                                                     <div>
                                                         <a onClick={() => removeItem(item)}>删除</a>
+                                                        <a onClick={() => openAccountTable(item)} style={{marginLeft:'20px'}}>添加用户</a>
                                                     </div>
                                                 }
 

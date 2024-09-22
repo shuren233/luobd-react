@@ -73,7 +73,11 @@ export interface RolePageInput extends PageInput {
 
 
     defaulted?:boolean
+}
 
+export interface SetRoleAccountsInput {
+    roleId:number
+    accountIds:number[]
 }
 
 
