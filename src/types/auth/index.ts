@@ -52,3 +52,31 @@ export interface AccountPageInput extends PageInput {
 
 }
 
+export interface AuthRolePageDto {
+    id:number
+    roleName:string
+    roleKey:string
+    remark:string
+    createTime:string
+    userCount:number
+    defaulted:boolean
+}
+
+export interface CreateRoleInput {
+    roleName:string
+    roleKey:string
+    remark?:string
+}
+
+export interface RolePageInput extends PageInput {
+    searchInfo?:string
+
+
+    defaulted?:boolean
+
+}
+
+
+
+
+
