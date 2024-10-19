@@ -20,6 +20,8 @@ export interface FinanceItem {
 
     status:number;
 
+    type:number
+
 }
 
 
@@ -33,6 +35,9 @@ export interface FinanceItemInput {
     occurTime:string;
 
     remark?:string;
+
+
+    type:string;
 
 
 }

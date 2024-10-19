@@ -1,16 +1,15 @@
 
 import React, {useEffect, useState} from "react";
 import style from './category.module.scss'
-import {Button, Form, Input, message, Modal, Pagination, Select, Table, Tree} from "antd";
+import {Button, Form, Input, message, Modal, Pagination, Table} from "antd";
 import FormItem from "antd/es/form/FormItem";
-import {CategoryInput, CategoryNode, CategoryPageInput, CoreCategory} from "@/types/core";
+import {CategoryInput, CategoryPageInput, CoreCategory} from "@/types/core";
 import TextArea from "antd/es/input/TextArea";
-const { TreeNode } = Tree;
-import {create,remove,page,tree} from '@/api/core'
+import {create,remove,page} from '@/api/core'
 import Column from "antd/es/table/Column";
 const App: React.FC = () => {
 
-    const [categories,setCategories] = useState<CategoryNode[]>([])
+
     const [form] = Form.useForm()
     const [searchForm] = Form.useForm()
     const [open,setOpen] = useState(false)
@@ -19,42 +18,31 @@ const App: React.FC = () => {
     const [total,setTotal] = useState(0)
     const [pageIndex,setPageIndex] = useState(1)
     const [pageSize,setPageSize] = useState(15)
-    const [parentId,setParentId] = useState(0)
 
 
     useEffect(() => {
-        getPage(pageIndex,pageSize,parentId);
-        getTree()
+        getPage(pageIndex,pageSize);
     },[])
-    const getTree = () => {
-        tree('finance').then((res) => {
-            setCategories(res.data)
-        })
-    }
+
     const closeMadal = () => {
         setOpen(false)
         form.resetFields(["categoryName",'parentId','remark'])
         setId(0)
     }
-    const getPage = (pageIndex:number,pageSize:number,parentId:number) => {
+    const getPage = (pageIndex:number,pageSize:number) => {
         const input:CategoryPageInput = {
             type:'finance',
             pageIndex:pageIndex,
             pageSize:pageSize,
-            categoryName:searchForm.getFieldValue('categoryName'),
-            parentId:parentId == 0 ? undefined : parentId
+            categoryName:searchForm.getFieldValue('categoryName')
         }
         page(input).then((res) => {
             setList(res.data)
             setTotal(res.total)
-            message.success(`获取数据成功,共${res.total}条数据`)
         })
     }
 
-    const changeParentId = (parentId:number) => {
-        setParentId(parentId)
-        getPage(pageIndex,pageSize,parentId)
-    }
+
 
 
 
@@ -62,13 +50,12 @@ const App: React.FC = () => {
     const changePagination = (pageNo:number,pageSize:number) => {
         setPageIndex(pageNo)
         setPageSize(pageSize)
-        getPage(pageNo,pageSize,parentId)
+        getPage(pageNo,pageSize)
     }
 
     const onFinish = () => {
         const input:CategoryInput = {
             categoryName:form.getFieldValue('categoryName'),
-            parentId:form.getFieldValue('parentId'),
             remark:form.getFieldValue('remark'),
             type: 'finance',
             id:id
@@ -76,7 +63,7 @@ const App: React.FC = () => {
         if(id == 0) {
             create(input).then((res) => {
                 if (res.code === 200) {
-                    getPage(pageIndex,pageSize,parentId)
+                    getPage(pageIndex,pageSize)
                     message.success('新增成功')
                     closeMadal()
                 }
@@ -90,7 +77,7 @@ const App: React.FC = () => {
         remove(id).then((res) => {
             if(res.code === 200) {
                 message.success('删除成功')
-                getPage(pageIndex,pageSize,parentId)
+                getPage(pageIndex,pageSize)
             }
         })
 
@@ -114,15 +101,6 @@ const App: React.FC = () => {
                 }>
                     <Input />
                 </FormItem>
-                <FormItem name={'parentId'} label={'父级分类'}>
-                    <Select allowClear>
-                        {
-                            categories.map((item) => {
-                                return <Select.Option value={item.id}>{item.categoryName}</Select.Option>
-                            })
-                        }
-                    </Select>
-                </FormItem>
                 <FormItem name={'remark'} label={'备注'}>
                     <TextArea />
                 </FormItem>
@@ -136,27 +114,27 @@ const App: React.FC = () => {
 
         </Modal>
         <div className={style.financeCategory}>
-            <div className={style.left}>
-                <Tree  multiple={false} onSelect={(keys,e) => {
-                    console.log(e)
-                    const seleted = keys.length > 0
-                    const id = seleted ? Number(keys[0]) : 0
-                    changeParentId(id)
-                }
-                }>
-                    {
-                        categories.map((item) => {
-                            return <TreeNode  title={item.categoryName} key={item.id}>
-                                {
-                                    item.children?.map((item) => {
-                                        return <TreeNode selectable={false} isLeaf title={item.categoryName} key={item.id} />
-                                    })
-                                }
-                            </TreeNode>
-                        })
-                    }
-                </Tree>
-            </div>
+            {/*<div className={style.left}>*/}
+            {/*    <Tree  multiple={false} onSelect={(keys,e) => {*/}
+            {/*        console.log(e)*/}
+            {/*        const seleted = keys.length > 0*/}
+            {/*        const id = seleted ? Number(keys[0]) : 0*/}
+            {/*        changeParentId(id)*/}
+            {/*    }*/}
+            {/*    }>*/}
+            {/*        {*/}
+            {/*            categories.map((item) => {*/}
+            {/*                return <TreeNode  title={item.categoryName} key={item.id}>*/}
+            {/*                    {*/}
+            {/*                        item.children?.map((item) => {*/}
+            {/*                            return <TreeNode selectable={false} isLeaf title={item.categoryName} key={item.id} />*/}
+            {/*                        })*/}
+            {/*                    }*/}
+            {/*                </TreeNode>*/}
+            {/*            })*/}
+            {/*        }*/}
+            {/*    </Tree>*/}
+            {/*</div>*/}
             <div className={style.right}>
                 <div className={style.top}>
                     <div>
@@ -165,7 +143,7 @@ const App: React.FC = () => {
                                 <Input style={{width: '200px'}}  />
                             </FormItem>
                             <FormItem>
-                                <Button style={{marginLeft:'20px'}} type={'primary'} onClick={() => getPage(pageIndex,pageSize,parentId)}>搜索</Button>
+                                <Button style={{marginLeft:'20px'}} type={'primary'} onClick={() => getPage(pageIndex,pageSize)}>搜索</Button>
                             </FormItem>
                         </Form>
 
@@ -180,7 +158,7 @@ const App: React.FC = () => {
                         key={'id'}
                     >
                     <Column key={'categoryName'} title={'分类名称'} dataIndex={'categoryName'} />
-                        <Column key={'parentName'} title={'父级分类'} dataIndex={'parentName'} />
+                        {/*<Column key={'parentName'} title={'父级分类'} dataIndex={'parentName'} />*/}
                     <Column<CoreCategory> key={'status'} title={'状态'} dataIndex={'status'} render={(_,record) => {
                         return record.status == 0 ? '正常' : '禁用'
 }} />
@@ -192,8 +170,6 @@ const App: React.FC = () => {
                                 <a style={{marginLeft:'10px'}} onClick={() => removeById(record.id)}>删除</a>
                             </div>
                         )} />
-
-
                     </Table>
                 </div>
                 <div className={style.footer}>

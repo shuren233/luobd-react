@@ -15,7 +15,7 @@ export interface CategoryNode {
 export interface CategoryInput {
     id:number;
     categoryName:string;
-    parentId:number;
+    parentId?:number;
     type:string;
     remark:string;
 }

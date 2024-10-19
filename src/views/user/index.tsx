@@ -1,14 +1,12 @@
-import React from 'react';
+import React,{lazy} from 'react';
 
-import {useSelector} from "react-redux";
+const ChatInput = lazy(() => import('@/components/chat/input'))
+
+
 const App: React.FC = () => {
-    const {token} = useSelector((state:StoreDetail) => ({
-        token:state.token
-    }))
     return (
         <>
-            <div>用户信息</div>
-            <p>{token}</p>
+            <ChatInput />
         </>
     );
 };

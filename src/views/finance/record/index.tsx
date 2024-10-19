@@ -1,6 +1,6 @@
 
 import React, {useEffect, useState} from "react";
-import {Button, Cascader, DatePicker, Form, Input, InputNumber, message, Modal, Pagination, Table} from "antd";
+import {Button, Cascader, DatePicker, Form, Input, InputNumber, message, Modal, Pagination, Select, Table} from "antd";
 import FormItem from "antd/es/form/FormItem";
 import dayjs from "dayjs";
 import Column from "antd/es/table/Column";
@@ -8,6 +8,7 @@ import {FinanceItem, FinanceItemInput, FinanceItemPageInput} from "@/types/finan
 import {page,remove,create,update} from "@/api/finance";
 import TextArea from "antd/es/input/TextArea";
 import {tree} from '@/api/core'
+
 
 
 const App: React.FC = () => {
@@ -75,7 +76,8 @@ const App: React.FC = () => {
             categoryId: categoryIds[categoryIds.length - 1],
             occurTime:dayjs(form.getFieldValue('occurTime')).format('YYYY-MM-DD HH:mm:ss'),
             amount:form.getFieldValue('amount'),
-            remark:form.getFieldValue('remark')
+            remark:form.getFieldValue('remark'),
+            type:form.getFieldValue('type')
         }
 
         if(id === 0) {
@@ -153,6 +155,10 @@ const App: React.FC = () => {
                     <FormItem name={'categoryId'} label={'分类'} rules={[{required:true,message:'分类不能为空'}]}>
                         <Cascader options={options}  />
                     </FormItem>
+                    <FormItem name={'type'} label={'流水类型'} rules={[{required:true,message:'类型不能为空'}]}>
+                        <Select style={{width:'100px'}}  options={[{'label':'支出','value':'-1'},{'label':'收入','value':'1'}]}  />
+
+                    </FormItem>
                     <FormItem name={'amount'} label={'金额'} rules={[{required:true,message:'金额不能为空'}]}>
                         <InputNumber min={'1'}/>
                     </FormItem>
@@ -197,6 +203,7 @@ const App: React.FC = () => {
                     <Column key={'categoryName'} title={'分类'} dataIndex={'categoryName'} />
                     <Column key={'occurTime'} title={'发生时间'} dataIndex={'occurTime'}/>
                     <Column key={'amount'} title={'金额'} dataIndex={'amount'}/>
+                    <Column<FinanceItem> key={'type'} title={'类型'} dataIndex={'type'} render={(_,record) => record.type === 1 ? '收入' : '支出'} />
                     <Column key={'createTime'} title={'创建时间'} dataIndex={'createTime'} />
                     <Column key={'updateTime'} title={'更新时间'} dataIndex={'updateTime'}/>
                     <Column key={'remark'} title={'备注'} dataIndex={'remark'}/>
