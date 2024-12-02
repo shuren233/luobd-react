@@ -1,0 +1,11 @@
+.default-header {
+    display: flex;
+    align-items: center;
+    .header-left {
+        width: 208px;
+        font-size: 20px;
+        padding-left: 30px;
+        color: #fff;
+        cursor: pointer;
+    }
+}
