@@ -29,6 +29,7 @@ const router = [
     },
     {
         path: "/home",
+        name: "home",
         meta: {
             title: "门户信息",
         },
@@ -36,6 +37,7 @@ const router = [
         children: [
             {
                 path: "/home/user",
+                name: "home-user",
                 meta: {
                     title: "门户信息",
                 },
@@ -49,6 +51,7 @@ const router = [
     },
     {
         path: "/cash",
+        name: "cash",
         meta: {
             title: "礼金管理",
         },
@@ -56,6 +59,7 @@ const router = [
         children: [
             {
                 path: "/cash/cashProject",
+                name: "cash-cashProject",
                 meta: {
                     title: "礼金项目",
                 },
@@ -67,8 +71,12 @@ const router = [
             },
             {
                 path: "/cash/cashItem",
+                name: "cash-cashItem",
                 meta: {
                     title: "礼金明细",
+                    roles: {
+                        page: "crashDetail",
+                    },
                 },
                 element: (
                     <React.Suspense fallback={<div>加载中...</div>}>
@@ -80,6 +88,7 @@ const router = [
     },
     {
         path: "/chat",
+        name: "chat",
         meta: {
             title: "AI助手",
         },
@@ -87,6 +96,7 @@ const router = [
         children: [
             {
                 path: "/chat/chatConversation",
+                name: "chat-chatConversation",
                 meta: {
                     title: "AI对话",
                 },
@@ -98,6 +108,7 @@ const router = [
             },
             {
                 path: "/chat/chatData",
+                name: "chat-chatData",
                 meta: {
                     title: "数据管理",
                 },
@@ -111,6 +122,7 @@ const router = [
     },
     {
         path: "/plan",
+        name: "plan",
         meta: {
             title: "计划管理",
         },
@@ -118,6 +130,7 @@ const router = [
         children: [
             {
                 path: "/plan/planItem",
+                name: "plan-planItem",
                 meta: {
                     title: "待办列表",
                 },
@@ -129,6 +142,7 @@ const router = [
             },
             {
                 path: "/plan/planSchedule",
+                name: "plan-planSchedule",
                 meta: {
                     title: "我的日程",
                 },
@@ -142,6 +156,7 @@ const router = [
     },
     {
         path: "/finance",
+        name: "finance",
         meta: {
             title: "财务管理",
         },
@@ -149,6 +164,7 @@ const router = [
         children: [
             {
                 path: "/finance/financeCategory",
+                name: "finance-financeCategory",
                 meta: {
                     title: "分类管理",
                 },
@@ -160,6 +176,7 @@ const router = [
             },
             {
                 path: "/finance/financeRecord",
+                name: "finance-financeRecord",
                 meta: {
                     title: "财务流水",
                 },
@@ -171,6 +188,7 @@ const router = [
             },
             {
                 path: "/finance/financePlan",
+                name: "finance-financePlan",
                 meta: {
                     title: "计划目标",
                 },
@@ -182,6 +200,7 @@ const router = [
             },
             {
                 path: "/finance/financeStatistics",
+                name: "finance-financeStatistics",
                 meta: {
                     title: "财务统计",
                 },
@@ -195,6 +214,7 @@ const router = [
     },
     {
         path: "/authorize",
+        name: "authorize",
         meta: {
             title: "认证授权",
         },
@@ -202,6 +222,7 @@ const router = [
         children: [
             {
                 path: "/authorize/userList",
+                name: "authorize-userList",
                 meta: {
                     title: "用户列表",
                 },
@@ -214,6 +235,7 @@ const router = [
             },
             {
                 path: "/authorize/roleManage",
+                name: "authorize-roleManage",
                 meta: {
                     title: "角色管理",
                 },
@@ -228,23 +250,30 @@ const router = [
     },
     {
         path: "/login",
+        name: "login",
         // 重定向
         element: <Login />,
     },
     {
         path: "/register",
+        name: "register",
         // 重定向
         element: <Register />,
     },
     {
         path: "/form",
+        name: "form",
         meta: {
             title: "表单",
+            roles: {
+                page: "form",
+            },
         },
         element: <DefaultLayout />,
         children: [
             {
                 path: "/form/detail",
+                name: "form-detail",
                 meta: {
                     title: "详情",
                 },
